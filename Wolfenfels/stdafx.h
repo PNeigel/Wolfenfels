@@ -10,6 +10,6 @@
 #include <stdio.h>
 #include <tchar.h>
 
-
+int y = 6;
 
 // TODO: Hier auf zusätzliche Header, die das Programm erfordert, verweisen.
