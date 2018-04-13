@@ -49,8 +49,8 @@ int main()
 	float points[] = { // read as { p1_x, p1_y, p1_z, p2_x, p2_y, p2_z, ...}
 		0.0f,  0.5f,  0.0f, // top point
 		0.5f, 0.0f,  0.0f, // right point
-		0.0f, -0.5f, 0.0f // bottom point
 		-0.5f, 0.0f,  0.0f, // left point
+		0.0f, -0.5f, 0.0f // bottom point
 	};
 
 	GLuint vbo = 0;
@@ -99,7 +99,7 @@ int main()
 		glBindVertexArray(vao);
 		// draw points 0-3 from the currently bound VAO with current in-use shader
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawArrays(GL_QUADS, 0, 4);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		// put the stuff we've been drawing onto the display
 		glfwSwapBuffers(window);
 		// update other events like input handling 
