@@ -10,11 +10,10 @@ int main()
 	GLFWwindow* window;
 
 	// Initialize GLFW
-	if (!glfwInit())
-		// NOTE: this if statement returns -1 if the printf() or cout below is uncommented. Weird?
-		//printf("Error: Couldn't initialize GLFW.");
-		//cout << "Error: Couldn't initialize GLFW." << endl;
+	if (!glfwInit()) {
+		cout << "Error: Couldn't initialize GLFW." << endl;
 		return -1;
+	}
 
 	// Create a windowed mode window and its OpenGL context
 	window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
@@ -35,8 +34,8 @@ int main()
 	// get version info
 	const GLubyte* renderer = glGetString(GL_RENDERER); // get renderer string
 	const GLubyte* version = glGetString(GL_VERSION); // version as a string
-	printf("Renderer: %s\n", renderer);
-	printf("OpenGL version supported %s\n", version);
+	cout << "Renderer: " << renderer << endl;
+	cout << "OpenGL version supported: " << version << endl;
 
 	// tell GL to only draw onto a pixel if the shape is closer to the viewer
 	glEnable(GL_DEPTH_TEST); // enable depth-testing
