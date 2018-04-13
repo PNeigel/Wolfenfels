@@ -47,15 +47,16 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	float points[] = { // read as { p1_x, p1_y, p1_z, p2_x, p2_y, p2_z, ...}
-		0.0f,  0.5f,  0.0f,
-		0.5f, -0.5f,  0.0f,
-		-0.5f, -0.5f,  0.0f
+		0.0f,  0.5f,  0.0f, // top point
+		0.5f, 0.0f,  0.0f, // right point
+		0.0f, -0.5f, 0.0f // bottom point
+		-0.5f, 0.0f,  0.0f, // left point
 	};
 
 	GLuint vbo = 0;
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points, GL_STATIC_DRAW);
+	glGenBuffers(1, &vbo); // Generate empty buffer
+	glBindBuffer(GL_ARRAY_BUFFER, vbo); // Bind as current buffer in OpenGL's state machine
+	glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), points, GL_STATIC_DRAW);
 
 	GLuint vao = 0;
 	glGenVertexArrays(1, &vao);
@@ -65,10 +66,10 @@ int main()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
 	const char* vertex_shader =
-		"#version 400\n"
+		"#version 400\n" // Version of GLSL
 		"in vec3 vp;"
 		"void main() {"
-		"  gl_Position = vec4(vp, 1.0);"
+		"  gl_Position = vec4(vp, 1.0);" // Shader just appends a 4-th dimension with a 1.0
 		"}";
 
 	const char* fragment_shader =
@@ -97,7 +98,8 @@ int main()
 		glUseProgram(shader_programme);
 		glBindVertexArray(vao);
 		// draw points 0-3 from the currently bound VAO with current in-use shader
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_QUADS, 0, 4);
 		// put the stuff we've been drawing onto the display
 		glfwSwapBuffers(window);
 		// update other events like input handling 
