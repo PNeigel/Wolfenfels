@@ -53,6 +53,15 @@ int main()
 		0.0f, -0.5f, 0.0f // bottom point
 	};
 
+	float points2[] = { // read as { p1_x, p1_y, p1_z, p2_x, p2_y, p2_z, ...}
+		-0.5f,  0.5f,  0.0f, // top point
+		0.0f, 0.0f,  0.0f, // right point
+		-1.0f, 0.0f,  0.0f, // left point
+		-0.5f, -0.5f, 0.0f // bottom point
+	};
+
+	GLubyte indices[] = {0,1,2,1,2,3}; // When using glDrawElements() instead of glDrawArrays
+
 	GLuint vbo = 0;
 	glGenBuffers(1, &vbo); // Generate empty buffer
 	glBindBuffer(GL_ARRAY_BUFFER, vbo); // Bind as current buffer in OpenGL's state machine
@@ -65,18 +74,37 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
+	vbo = 0;
+	glGenBuffers(1, &vbo); // Generate empty buffer
+	glBindBuffer(GL_ARRAY_BUFFER, vbo); // Bind as current buffer in OpenGL's state machine
+	glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), points2, GL_STATIC_DRAW);
+
+	GLuint vao2 = 0;
+	glGenVertexArrays(1, &vao2);
+	glBindVertexArray(vao2);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
 	const char* vertex_shader =
 		"#version 400\n" // Version of GLSL
 		"in vec3 vp;"
 		"void main() {"
-		"  gl_Position = vec4(vp, 1.0);" // Shader just appends a 4-th dimension with a 1.0
+		"  gl_Position = vec4(vp.x+0.2, vp.y, vp.z, 1.0);" // Shader just appends a 4-th dimension with a 1.0 + moves to the right by 0.2
 		"}";
 
 	const char* fragment_shader =
 		"#version 400\n"
 		"out vec4 frag_colour;"
 		"void main() {"
-		"  frag_colour = vec4(0.5, 0.0, 0.5, 1.0);"
+		"  frag_colour = vec4(0.2, 0.0, 0.5, 1.0);"
+		"}";
+
+	const char* fragment_shader2 =
+		"#version 400\n"
+		"out vec4 frag_colour;"
+		"void main() {"
+		"  frag_colour = vec4(0.6, 0.1, 0.5, 0.9);"
 		"}";
 
 	GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -85,11 +113,19 @@ int main()
 	GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fs, 1, &fragment_shader, NULL);
 	glCompileShader(fs);
+	GLuint fs2 = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fs2, 1, &fragment_shader2, NULL);
+	glCompileShader(fs2);
 
 	GLuint shader_programme = glCreateProgram();
 	glAttachShader(shader_programme, fs);
 	glAttachShader(shader_programme, vs);
 	glLinkProgram(shader_programme);
+
+	GLuint shader_programme2 = glCreateProgram();
+	glAttachShader(shader_programme2, fs2);
+	glAttachShader(shader_programme2, vs);
+	glLinkProgram(shader_programme2);
 
 	// Loop until the user closes the window
 	while (!glfwWindowShouldClose(window)) {
@@ -100,6 +136,12 @@ int main()
 		// draw points 0-3 from the currently bound VAO with current in-use shader
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
+
+		glUseProgram(shader_programme2);
+		glBindVertexArray(vao2);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
 		// put the stuff we've been drawing onto the display
 		glfwSwapBuffers(window);
 		// update other events like input handling 
