@@ -1,0 +1,4 @@
+- GLFW/GL/Engine trennen von game logik
+- Erste Wand zeichnen wireframe
+- Projektion
+- Bewegung
