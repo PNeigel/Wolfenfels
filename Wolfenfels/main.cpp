@@ -136,7 +136,7 @@ int main()
 	const GLubyte* version = glGetString(GL_VERSION); // version as a string
 	cout << "Renderer: " << renderer << endl;
 	cout << "OpenGL version supported: " << version << endl;
-
+	
 	// tell GL to only draw onto a pixel if the shape is closer to the viewer
 	glEnable(GL_DEPTH_TEST); // enable depth-testing
 	//glEnable(GL_CULL_FACE);
