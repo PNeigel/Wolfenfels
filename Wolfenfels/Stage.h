@@ -2,7 +2,9 @@
 #include <vector>
 #include <glm.hpp>
 #include <ext.hpp>
+
 #include <GL/glew.h>
+
 #include <iostream>
 
 using namespace std;
@@ -22,22 +24,29 @@ class Stage
 {
 public:
 	Stage(int stage_no);
-	Stage() { Stage(1); };
+	Stage() {}
 	~Stage();
 
-	void RenderStage();
+	void RenderStage(GLuint bgshader, GLuint wallshader);
 	void SetWallVerts();
+	void SetBGVerts();
 	void CreateBufferArray();
 
 	vector<Wall> walls;
 	float* vertcoords;
 	float* colors;
+	float bgverts[24];
+	float bgcolors[24];
 	int n_wallverts;
 	int n_vertcoords;
 
 	GLuint vbo_pos = 0; // Position VBO
 	GLuint vbo_col = 0; // Color VBO
 	GLuint vao = 0; // Vertex array object
+
+	GLuint bgvbo_pos = 0;
+	GLuint bgvbo_col = 0;
+	GLuint bgvao = 0;
 
 };
 

@@ -1,0 +1,16 @@
+- GLFW/GL/Engine trennen von game logik
+- Floor / ceiling rendering
+	- new shader without MVP
+- Change Keystate from PollEvent and not every frame
+- Create stage data format
+- Wall textures
+- Player class
+- Gameplay:
+	- hitpoints
+	- weapon
+	- enemies
+- doors
+- menu
+- map
+- HUD
+- Remove stage rendering from stage class

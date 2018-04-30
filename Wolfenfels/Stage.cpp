@@ -18,6 +18,7 @@ Stage::Stage(int stage_no)
 		int x = 5;
 	}
 	SetWallVerts();
+	SetBGVerts();
 	CreateBufferArray();
 }
 
@@ -26,8 +27,15 @@ Stage::~Stage()
 {
 }
 
-void Stage::RenderStage()
+void Stage::RenderStage(GLuint bgshader, GLuint wallshader)
 {
+	glUseProgram(bgshader);
+	// Render floor and ceiling
+	glBindVertexArray(bgvao);
+	glDrawArrays(GL_QUADS, 0, 8);
+
+	glUseProgram(wallshader);
+	// Render Walls
 	glBindVertexArray(vao);
 	glDrawArrays(GL_QUADS, 0, n_wallverts);
 }
@@ -55,10 +63,10 @@ void Stage::SetWallVerts()
 
 	// Vertex colors
 	float colors_dict[] = {
-		1.0f, 0.0f,  0.0f,
-		0.0f, 1.0f,  0.0f,
-		0.0f, 0.0f,  1.0f,
-		0.9f, 0.8f,  0.7f
+		0.1f, 0.1f,  0.1f,
+		0.3f, 0.3f,  0.3f,
+		0.1f, 0.1f,  0.1f,
+		0.2f, 0.2f,  0.2f
 	};
 	vector<float>* colors_vec = new vector<float>;
 	for (uint16_t i = 0; i < walls.size(); i++) { // Set colors for every wall.
@@ -67,13 +75,36 @@ void Stage::SetWallVerts()
 		}
 	}
 	colors = &(*colors_vec)[0];
+}
 
-	cout << "n_walltverts: " << n_wallverts << endl;
-	cout << "walls.size(): " << walls.size() << endl << endl;
-	for (int i=0; i<n_vertcoords; i++) {
-		if ((i + 1) % 3 == 0 && i != 0) cout << vertcoords[i] << endl;
-		else cout << vertcoords[i] << ",\t";
-	}
+void Stage::SetBGVerts()
+{
+	float lbgverts[] = {
+		// ceiling
+		-1.0f, 0.0f, 0.9999f,
+		1.0f, 0.0f, 0.9999f,
+		1.0f, 1.0f, 0.9999f,
+		-1.0f, 1.0f, 0.9999f,
+		//floor
+		-1.0f, 0.0f, 0.9999f,
+		-1.0f, -1.0f, 0.9999f,
+		1.0f, -1.0f,0.9999f,
+		1.0f, 0.0f, 0.9999f
+	};
+	float lbgcolors[] = {
+		// ceiling
+		0.53f, 0.81f,  0.98f,
+		0.53f, 0.81f,  0.98f,
+		0.53f, 0.81f,  0.98f,
+		0.53f, 0.81f,  0.98f,
+		// floor
+		0.19f, 0.79f,  0.0f,
+		0.19f, 0.79f,  0.0f,
+		0.19f, 0.79f,  0.0f,
+		0.19f, 0.79f,  0.0f
+	};
+	std::copy(std::begin(lbgverts), std::end(lbgverts), bgverts);
+	std::copy(std::begin(lbgcolors), std::end(lbgcolors), bgcolors);
 }
 
 void Stage::CreateBufferArray()
@@ -95,5 +126,24 @@ void Stage::CreateBufferArray()
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_pos);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_col);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+	// Background
+
+	glGenBuffers(1, &bgvbo_pos); // Generate empty buffer
+	glBindBuffer(GL_ARRAY_BUFFER, bgvbo_pos); // Bind as current buffer in OpenGL's state machine
+	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), bgverts, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &bgvbo_col); // Generate empty buffer
+	glBindBuffer(GL_ARRAY_BUFFER, bgvbo_col); // Bind as current buffer in OpenGL's state machine
+	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), bgcolors, GL_STATIC_DRAW);
+
+	glGenVertexArrays(1, &bgvao);
+	glBindVertexArray(bgvao);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, bgvbo_pos);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glBindBuffer(GL_ARRAY_BUFFER, bgvbo_col);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 }
