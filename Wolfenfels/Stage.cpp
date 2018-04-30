@@ -25,6 +25,7 @@ Stage::Stage(int stage_no)
 
 Stage::~Stage()
 {
+	//
 }
 
 void Stage::RenderStage(GLuint bgshader, GLuint wallshader)
