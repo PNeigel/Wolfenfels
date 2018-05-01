@@ -1,22 +1,15 @@
 #include "Stage.h"
 
+#include <fstream>
+#include <sstream>
+
 
 Stage::Stage(int stage_no)
 {
-	switch (stage_no) {
-	case 1:
-	{
-		Wall wall;
-		walls.push_back(wall);
-		Wall wall2(glm::vec2{0.5f, 0.0f}, glm::vec2{0.5f, 1.0f});
-		walls.push_back(wall2);
-		Wall wall3(glm::vec2{ 0.5f, 1.0f }, glm::vec2{ 1.5f, 1.0f });
-		walls.push_back(wall3);
-		break;
-	}
-	default:
-		int x = 5;
-	}
+	stringstream ssfilename;
+	ssfilename << "Stages/stage" << std::to_string(stage_no) << ".txt";
+	string filename = ssfilename.str();
+	ReadStageFromFile(filename);
 	SetWallVerts();
 	SetBGVerts();
 	CreateBufferArray();
@@ -25,7 +18,6 @@ Stage::Stage(int stage_no)
 
 Stage::~Stage()
 {
-	//
 }
 
 void Stage::RenderStage(GLuint bgshader, GLuint wallshader)
@@ -71,7 +63,7 @@ void Stage::SetWallVerts()
 	};
 	vector<float>* colors_vec = new vector<float>;
 	for (uint16_t i = 0; i < walls.size(); i++) { // Set colors for every wall.
-		for (int j = 0; j < 12; j++) {
+		for (int j = 0; j < 12; j++) { // 12 is the number of components per quad (3*4)
 			colors_vec->push_back(colors_dict[j]);
 		}
 	}
@@ -147,4 +139,19 @@ void Stage::CreateBufferArray()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	glBindBuffer(GL_ARRAY_BUFFER, bgvbo_col);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+}
+
+void Stage::ReadStageFromFile(string filename)
+{
+	ifstream file{ filename };
+	if (!file) cout << "ERROR: Could not open " << filename << endl;
+	
+	Wall wall;
+	float left_x, left_y, right_x, right_y;
+	while (file) {
+		file >> left_x >> left_y >> right_x >> right_y;
+		wall = Wall(glm::vec2{ left_x, left_y }, glm::vec2{ right_x, right_y });
+		walls.push_back(wall);
+	}
+	file.close();
 }

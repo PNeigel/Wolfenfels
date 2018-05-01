@@ -32,6 +32,8 @@ public:
 	void SetBGVerts();
 	void CreateBufferArray();
 
+	void ReadStageFromFile(string filename);
+
 	vector<Wall> walls;
 	float* vertcoords;
 	float* colors;

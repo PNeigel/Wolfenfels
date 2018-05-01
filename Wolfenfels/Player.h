@@ -26,7 +26,7 @@ public:
 	float move_speed = 0.02f;
 
 	float yaw = 00.0f;
-	float yaw_delta = 0.5f;
+	float yaw_delta = 1.0f;
 
 	glm::mat4 view_mat{ 1.0f };
 	glm::vec3 view_dir{ 1.0f };

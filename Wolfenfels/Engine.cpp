@@ -54,7 +54,7 @@ bool Engine::Init()
 
 	// tell GL to only draw onto a pixel if the shape is closer to the viewer
 	glEnable(GL_DEPTH_TEST); // enable depth-testing
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
