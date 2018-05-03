@@ -10,6 +10,7 @@ Player::Player()
 	cout << glm::to_string(pos) << endl;
 	proj_mat = glm::perspective(glm::radians(FOV), (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f);
 	ComputeView();
+	SetSpriteCoords();
 }
 
 
@@ -50,4 +51,23 @@ void Player::Update(int* keystates)
 	cout << "\r";
 	cout << "Yaw: " << yaw;
 	cout << "\tPos: " << glm::to_string(pos);
+}
+
+void Player::SetSpriteCoords()
+{
+	float lspritecoords[] = {
+		-0.2f, -1.0f, 0.0f,
+		0.2f, -1.0f, 0.0f,
+		0.2f, -0.2f, 0.0f,
+		-0.2f, -0.2f, 0.0f
+	};
+	std::copy(std::begin(lspritecoords), std::end(lspritecoords), spritecoords);
+
+	float lsprite_texture_coords[] = {
+		-0.2f, -1.0f, 0.0f,
+		0.2f, -1.0f, 0.0f,
+		0.2f, -0.2f, 0.0f,
+		-0.2f, -0.2f, 0.0f
+	};
+	std::copy(std::begin(lsprite_texture_coords), std::end(lsprite_texture_coords), sprite_texture_coords);
 }

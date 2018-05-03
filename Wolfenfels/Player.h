@@ -22,6 +22,11 @@ public:
 
 	void Update(int* keystates);
 
+	void SetSpriteCoords();
+
+	float* spritecoords;
+	float* sprite_texture_coords;
+
 	glm::vec3 pos{ 0.0f, -3.0f, 0.5f };
 	float move_speed = 0.02f;
 

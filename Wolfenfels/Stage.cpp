@@ -40,20 +40,12 @@ void Stage::SetWallVerts()
 	n_vertcoords = vertcoords_vec->size();
 	n_wallverts = walls.size() * 4;
 
-	// Vertex colors
-	float colors_dict[] = {
-		0.1f, 0.1f,  0.1f,
-		0.3f, 0.3f,  0.3f,
-		0.1f, 0.1f,  0.1f,
-		0.2f, 0.2f,  0.2f
-	};
 	float UV_dict[] = {
 		0.0f, 0.0f,
 		1.0f, 0.0f,
 		1.0f, 1.0f,
 		0.0f, 1.0f
 	};
-	vector<float>* colors_vec = new vector<float>;
 	vector<float>* UV_vec = new vector<float>;
 	for (uint16_t i = 0; i < walls.size(); i++) { // Set colors for every wall.
 		for (int j = 0; j < 8; j++) { // 12 is the number of components per quad (3*4)

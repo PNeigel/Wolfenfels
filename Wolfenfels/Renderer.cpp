@@ -54,9 +54,9 @@ GLuint Renderer::VAllocStageWalls(Stage & stage)
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_pos);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_uv);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 
@@ -94,11 +94,11 @@ GLuint Renderer::VAllocBG(Stage & stage)
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_pos);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(2);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_col);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
 	return vao;
 }

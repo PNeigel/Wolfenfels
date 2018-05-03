@@ -35,7 +35,6 @@ public:
 
 	vector<Wall> walls;
 	float* vertcoords;
-	float* colors;
 	float* wall_UV_coords;
 	float bgverts[24];
 	float bgcolors[24];

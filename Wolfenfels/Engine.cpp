@@ -81,7 +81,7 @@ void Engine::GameLoop()
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		GLuint MatrixID = glGetUniformLocation(shader_program, "MVP");
+		GLuint MatrixID = glGetUniformLocation(texshader_program, "MVP");
 
 		//ComputeView();
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &player.mvp[0][0]);
@@ -118,73 +118,91 @@ void Engine::UpdateKeystates()
 void Engine::CreateShaders()
 {
 
-	const char* vertex_shader =
+	const char* projection_vshader =
 		"#version 400\n" // Version of GLSL
-		"layout(location = 0) in vec3 v_pos;"
-		"layout(location = 1) in vec2 UV_coords_in;"
+		"layout(location = 0) in vec3 pos;"
+		"layout(location = 1) in vec2 UV_in;"
+		"layout(location = 2) in vec3 color_in;"
 		"uniform mat4 MVP;"
-		"out vec2 UV_coords;"
+		"out VertexData{"
+		"  vec2 UV;"
+		"  vec3 color;"
+		"} outp;"
 		"void main() {"
-		"  UV_coords = UV_coords_in;"
-		"  gl_Position = MVP * vec4(v_pos, 1.0);"
+		"  outp.UV = UV_in;"
+		"  outp.color = color_in;"
+		"  gl_Position = MVP * vec4(pos, 1.0);"
 		"}";
 
-	const char* bg_shader =
+	const char* straight_vshader =
 		"#version 400\n" // Version of GLSL
-		"layout(location = 0) in vec3 v_pos;"
-		"layout(location = 1) in vec3 v_col;"
-		"out vec3 color;"
+		"layout(location = 0) in vec3 pos;"
+		"layout(location = 1) in vec2 UV_in;"
+		"layout(location = 2) in vec3 color_in;"
+		"uniform mat4 MVP;"
+		"out VertexData{"
+		"  vec2 UV;"
+		"  vec3 color;"
+		"} outp;"
 		"void main() {"
-		"  color = v_col;"
-		"  gl_Position = vec4(v_pos, 1.0);"
+		"  outp.UV = UV_in;"
+		"  outp.color = color_in;"
+		"  gl_Position = vec4(pos, 1.0);"
 		"}";
 
-	const char* fragment_shader =
+	const char* color_fshader =
 		"#version 400\n"
-		"in vec3 color;"
+		"in VertexData{"
+		"  vec2 UV;"
+		"  vec3 color;"
+		"} inp;"
 		"out vec4 frag_color;"
 		"void main() {"
-		"  frag_color = vec4(color, 1.0);"
+		"  frag_color = vec4(inp.color, 1.0);"
 		"}";
 
-	const char* tex_fragment_shader =
+	const char* texture_fshader =
 		"#version 400\n"
-		"in vec2 UV_coords;"
+		"in VertexData{"
+		"  vec2 UV;"
+		"  vec3 color;"
+		"} inp;"
 		"out vec4 frag_color;"
 		"uniform sampler2D tex;"
 		"void main() {"
-		"  frag_color = texture( tex, UV_coords );"
+		"  frag_color = texture( tex, inp.UV );"
 		"}";
 
-	// Compile vertex shader
-	GLuint vs = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vs, 1, &vertex_shader, NULL);
-	glCompileShader(vs);
-	// Compile background vertex shader
-	GLuint bgs = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(bgs, 1, &bg_shader, NULL);
-	glCompileShader(bgs);
-	// Compile fragment shader
-	GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fs, 1, &fragment_shader, NULL);
-	glCompileShader(fs);
-	// Compile texture fragment shader
-	GLuint tfs = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(tfs, 1, &tex_fragment_shader, NULL);
-	glCompileShader(tfs);
+	GLuint p_vs = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(p_vs, 1, &projection_vshader, NULL);
+	glCompileShader(p_vs);
 
+	GLuint s_vs = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(s_vs, 1, &straight_vshader, NULL);
+	glCompileShader(s_vs);
+
+	GLuint c_fs = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(c_fs, 1, &color_fshader, NULL);
+	glCompileShader(c_fs);
+
+	GLuint t_fs = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(t_fs, 1, &texture_fshader, NULL);
+	glCompileShader(t_fs);
+
+	/*
 	shader_program = glCreateProgram();
 	glAttachShader(shader_program, fs);
 	glAttachShader(shader_program, vs);
 	glLinkProgram(shader_program);
+	*/
 
 	bgshader_program = glCreateProgram();
-	glAttachShader(bgshader_program, fs);
-	glAttachShader(bgshader_program, bgs);
+	glAttachShader(bgshader_program, c_fs);
+	glAttachShader(bgshader_program, s_vs);
 	glLinkProgram(bgshader_program);
 
 	texshader_program = glCreateProgram();
-	glAttachShader(texshader_program, tfs);
-	glAttachShader(texshader_program, vs);
+	glAttachShader(texshader_program, t_fs);
+	glAttachShader(texshader_program, p_vs);
 	glLinkProgram(texshader_program);
 }

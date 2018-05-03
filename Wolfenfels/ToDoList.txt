@@ -4,6 +4,8 @@
 - Create stage data format
 	- read stage from png
 - Player class
+	- collision with walls
+	- render weapon
 - Gameplay:
 	- hitpoints
 	- weapon
@@ -14,5 +16,4 @@
 - menu
 - map
 - HUD
-- Remove stage rendering from stage class
 - set appropriate members private
