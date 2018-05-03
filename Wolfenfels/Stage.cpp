@@ -13,6 +13,7 @@ Stage::Stage(int stage_no)
 	SetWallVerts();
 	SetBGVerts();
 	CreateBufferArray();
+	ReadPNG("wall.png");
 }
 
 
@@ -29,6 +30,7 @@ void Stage::RenderStage(GLuint bgshader, GLuint wallshader)
 
 	glUseProgram(wallshader);
 	// Render Walls
+	glBindTexture(GL_TEXTURE_2D, textureID);
 	glBindVertexArray(vao);
 	glDrawArrays(GL_QUADS, 0, n_wallverts);
 }
@@ -61,13 +63,20 @@ void Stage::SetWallVerts()
 		0.1f, 0.1f,  0.1f,
 		0.2f, 0.2f,  0.2f
 	};
+	float UV_dict[] = {
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+		0.0f, 1.0f
+	};
 	vector<float>* colors_vec = new vector<float>;
+	vector<float>* UV_vec = new vector<float>;
 	for (uint16_t i = 0; i < walls.size(); i++) { // Set colors for every wall.
-		for (int j = 0; j < 12; j++) { // 12 is the number of components per quad (3*4)
-			colors_vec->push_back(colors_dict[j]);
+		for (int j = 0; j < 8; j++) { // 12 is the number of components per quad (3*4)
+			UV_vec->push_back(UV_dict[j]);
 		}
 	}
-	colors = &(*colors_vec)[0];
+	wall_UV_coords = &(*UV_vec)[0];
 }
 
 void Stage::SetBGVerts()
@@ -91,10 +100,10 @@ void Stage::SetBGVerts()
 		0.53f, 0.81f,  0.98f,
 		0.53f, 0.81f,  0.98f,
 		// floor
-		0.19f, 0.79f,  0.0f,
-		0.19f, 0.79f,  0.0f,
-		0.19f, 0.79f,  0.0f,
-		0.19f, 0.79f,  0.0f
+		0.18f, 0.21f,  0.24f,
+		0.18f, 0.21f,  0.24f,
+		0.18f, 0.21f,  0.24f,
+		0.18f, 0.21f,  0.24f
 	};
 	std::copy(std::begin(lbgverts), std::end(lbgverts), bgverts);
 	std::copy(std::begin(lbgcolors), std::end(lbgcolors), bgcolors);
@@ -108,9 +117,15 @@ void Stage::CreateBufferArray()
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_pos); // Bind as current buffer in OpenGL's state machine
 	glBufferData(GL_ARRAY_BUFFER, n_vertcoords * sizeof(float), vertcoords, GL_STATIC_DRAW);
 
+	/*
 	glGenBuffers(1, &vbo_col); // Generate empty buffer
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_col); // Bind as current buffer in OpenGL's state machine
 	glBufferData(GL_ARRAY_BUFFER, n_vertcoords * sizeof(float), colors, GL_STATIC_DRAW);
+	*/
+
+	glGenBuffers(1, &vbo_uv); // Generate empty buffer
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_uv); // Bind as current buffer in OpenGL's state machine
+	glBufferData(GL_ARRAY_BUFFER, n_wallverts * 2 * sizeof(float), wall_UV_coords, GL_STATIC_DRAW);
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -118,8 +133,8 @@ void Stage::CreateBufferArray()
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_pos);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_col);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_uv);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 
 	// Background
 
@@ -154,4 +169,27 @@ void Stage::ReadStageFromFile(string filename)
 		walls.push_back(wall);
 	}
 	file.close();
+}
+
+void Stage::ReadPNG(string filename)
+{
+	png::image< png::rgba_pixel > image(filename);
+	png::pixel_buffer<png::rgba_pixel> img_buf = image.get_pixbuf();
+	for (int i = 0; i < height; ++i) {
+		for (int j = 0; j < width; ++j) {
+			texture[(height-1 - i) * width * 4 + j * 4 + 0] = img_buf.get_pixel(j, i).red;
+			texture[(height-1 - i) * width * 4 + j * 4 + 1] = img_buf.get_pixel(j, i).green;
+			texture[(height-1 - i) * width * 4 + j * 4 + 2] = img_buf.get_pixel(j, i).blue;
+			texture[(height-1 - i) * width * 4 + j * 4 + 3] = img_buf.get_pixel(j, i).alpha;
+		}
+	}
+
+	glGenTextures(1, &textureID);
+
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glGenerateMipmap(GL_TEXTURE_2D);
 }

@@ -33,5 +33,6 @@ public:
 
 	GLuint shader_program;
 	GLuint bgshader_program;
+	GLuint texshader_program;
 };
 

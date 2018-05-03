@@ -2,6 +2,7 @@
 #include <vector>
 #include <glm.hpp>
 #include <ext.hpp>
+#include <png.hpp>
 
 #include <GL/glew.h>
 
@@ -33,17 +34,25 @@ public:
 	void CreateBufferArray();
 
 	void ReadStageFromFile(string filename);
+	void ReadPNG(string filename);
 
 	vector<Wall> walls;
 	float* vertcoords;
 	float* colors;
+	float* wall_UV_coords;
 	float bgverts[24];
 	float bgcolors[24];
 	int n_wallverts;
 	int n_vertcoords;
 
+	GLuint textureID;
+	GLsizei width = 512;
+	GLsizei height = 512;
+	unsigned char* texture = new unsigned char[width * height * 4];
+
 	GLuint vbo_pos = 0; // Position VBO
 	GLuint vbo_col = 0; // Color VBO
+	GLuint vbo_uv = 0;
 	GLuint vao = 0; // Vertex array object
 
 	GLuint bgvbo_pos = 0;

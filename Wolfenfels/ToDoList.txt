@@ -1,14 +1,15 @@
-- GLFW/GL/Engine trennen von game logik
-- Floor / ceiling rendering
-	- new shader without MVP
+- GLFW/GL/Engine seperate from game logic
+- Clean up shaders
 - Change Keystate from PollEvent and not every frame
 - Create stage data format
-- Wall textures
+	- read stage from png
 - Player class
 - Gameplay:
 	- hitpoints
 	- weapon
+		- attack
 	- enemies
+		- attack
 - doors
 - menu
 - map

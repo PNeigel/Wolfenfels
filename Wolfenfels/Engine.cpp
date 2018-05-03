@@ -84,7 +84,7 @@ void Engine::GameLoop()
 
 		//ComputeView();
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &player.mvp[0][0]);
-		stage.RenderStage(bgshader_program, shader_program);
+		stage.RenderStage(bgshader_program, texshader_program);
 
 		// put the stuff we've been drawing onto the display
 		glfwSwapBuffers(window);
@@ -116,15 +116,15 @@ void Engine::UpdateKeystates()
 
 void Engine::CreateShaders()
 {
-	// Shaders in GLSL
+
 	const char* vertex_shader =
 		"#version 400\n" // Version of GLSL
 		"layout(location = 0) in vec3 v_pos;"
-		"layout(location = 1) in vec3 v_col;"
+		"layout(location = 1) in vec2 UV_coords_in;"
 		"uniform mat4 MVP;"
-		"out vec3 color;"
+		"out vec2 UV_coords;"
 		"void main() {"
-		"  color = v_col;"
+		"  UV_coords = UV_coords_in;"
 		"  gl_Position = MVP * vec4(v_pos, 1.0);"
 		"}";
 
@@ -146,19 +146,33 @@ void Engine::CreateShaders()
 		"  frag_color = vec4(color, 1.0);"
 		"}";
 
-	// Compile and link shaders
+	const char* tex_fragment_shader =
+		"#version 400\n"
+		"in vec2 UV_coords;"
+		"out vec4 frag_color;"
+		"uniform sampler2D tex;"
+		"void main() {"
+		"  frag_color = texture( tex, UV_coords );"
+		"}";
+
+	// Compile vertex shader
 	GLuint vs = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vs, 1, &vertex_shader, NULL);
 	glCompileShader(vs);
-	GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fs, 1, &fragment_shader, NULL);
-	glCompileShader(fs);
+	// Compile background vertex shader
 	GLuint bgs = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(bgs, 1, &bg_shader, NULL);
 	glCompileShader(bgs);
+	// Compile fragment shader
+	GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fs, 1, &fragment_shader, NULL);
+	glCompileShader(fs);
+	// Compile texture fragment shader
+	GLuint tfs = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(tfs, 1, &tex_fragment_shader, NULL);
+	glCompileShader(tfs);
 
 	shader_program = glCreateProgram();
-
 	glAttachShader(shader_program, fs);
 	glAttachShader(shader_program, vs);
 	glLinkProgram(shader_program);
@@ -167,4 +181,9 @@ void Engine::CreateShaders()
 	glAttachShader(bgshader_program, fs);
 	glAttachShader(bgshader_program, bgs);
 	glLinkProgram(bgshader_program);
+
+	texshader_program = glCreateProgram();
+	glAttachShader(texshader_program, tfs);
+	glAttachShader(texshader_program, vs);
+	glLinkProgram(texshader_program);
 }

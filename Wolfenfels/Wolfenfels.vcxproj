@@ -91,12 +91,12 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>D:\Programming\Visual Studio Libs\glm-0.9.8.5\glm\glm;D:\Programming\Visual Studio Libs\glfw-3.2.1.bin.WIN32\glfw-3.2.1.bin.WIN32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Programming\Visual Studio Libs\lpng1634\lpng1634;D:\Programming\Visual Studio Libs\png++\png++-0.2.9;D:\Programming\Visual Studio Libs\glm-0.9.8.5\glm\glm;D:\Programming\Visual Studio Libs\glfw-3.2.1.bin.WIN32\glfw-3.2.1.bin.WIN32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\Programming\Visual Studio Libs\glew-2.1.0-win32\glew-2.1.0\lib\Release\Win32;D:\Programming\Visual Studio Libs\glfw-3.2.1.bin.WIN32\glfw-3.2.1.bin.WIN32\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;libpng16.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Programming\Visual Studio Libs\lpng1634\lpng1634\projects\vstudio\Release;D:\Programming\Visual Studio Libs\glew-2.1.0-win32\glew-2.1.0\lib\Release\Win32;D:\Programming\Visual Studio Libs\glfw-3.2.1.bin.WIN32\glfw-3.2.1.bin.WIN32\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
