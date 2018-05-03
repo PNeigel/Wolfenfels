@@ -7,7 +7,7 @@
 #include <gtc/matrix_transform.hpp>
 
 class Player
-{
+{ // Acts both as the player and camera
 public:
 
 	const float FOV = 60.0f;

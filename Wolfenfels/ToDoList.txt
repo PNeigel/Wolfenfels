@@ -15,3 +15,4 @@
 - map
 - HUD
 - Remove stage rendering from stage class
+- set appropriate members private

@@ -28,13 +28,10 @@ public:
 	Stage() {}
 	~Stage();
 
-	void RenderStage(GLuint bgshader, GLuint wallshader);
 	void SetWallVerts();
 	void SetBGVerts();
-	void CreateBufferArray();
 
 	void ReadStageFromFile(string filename);
-	void ReadPNG(string filename);
 
 	vector<Wall> walls;
 	float* vertcoords;
@@ -44,20 +41,5 @@ public:
 	float bgcolors[24];
 	int n_wallverts;
 	int n_vertcoords;
-
-	GLuint textureID;
-	GLsizei width = 512;
-	GLsizei height = 512;
-	unsigned char* texture = new unsigned char[width * height * 4];
-
-	GLuint vbo_pos = 0; // Position VBO
-	GLuint vbo_col = 0; // Color VBO
-	GLuint vbo_uv = 0;
-	GLuint vao = 0; // Vertex array object
-
-	GLuint bgvbo_pos = 0;
-	GLuint bgvbo_col = 0;
-	GLuint bgvao = 0;
-
 };
 

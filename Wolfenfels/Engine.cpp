@@ -67,6 +67,7 @@ bool Engine::Init()
 
 void Engine::GameLoop()
 {
+	Renderer renderer(stage);
 	// Loop until the user closes the window
 	double elapsed = 0;
 	uint32_t framecount = 0;
@@ -84,7 +85,7 @@ void Engine::GameLoop()
 
 		//ComputeView();
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &player.mvp[0][0]);
-		stage.RenderStage(bgshader_program, texshader_program);
+		renderer.RenderAll(stage, texshader_program, bgshader_program);
 
 		// put the stuff we've been drawing onto the display
 		glfwSwapBuffers(window);

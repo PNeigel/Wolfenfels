@@ -3,6 +3,7 @@
 #include "globalenums.h"
 #include "Player.h"
 #include "Stage.h"
+#include "Renderer.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm.hpp>
