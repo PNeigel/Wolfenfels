@@ -5,7 +5,7 @@
 	- read stage from png
 - Player class
 	- collision with walls
-	- render weapon
+	- weapon anim
 - Gameplay:
 	- hitpoints
 	- weapon
@@ -16,4 +16,5 @@
 - menu
 - map
 - HUD
+- lighting
 - set appropriate members private
