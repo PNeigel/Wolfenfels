@@ -32,8 +32,6 @@ public:
 	GLFWwindow* window;
 	int keystates[8];
 
-	GLuint shader_program;
-	GLuint bgshader_program;
-	GLuint texshader_program;
+	vector<GLuint> shaders;
 };
 

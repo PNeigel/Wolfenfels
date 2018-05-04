@@ -63,11 +63,11 @@ void Player::SetSpriteCoords()
 	};
 	std::copy(std::begin(lspritecoords), std::end(lspritecoords), spritecoords);
 
-	float lsprite_texture_coords[] = {
-		-0.2f, -1.0f, 0.0f,
-		0.2f, -1.0f, 0.0f,
-		0.2f, -0.2f, 0.0f,
-		-0.2f, -0.2f, 0.0f
+	float lsprite_UV_coords[] = {
+		0.424f, 0.73f,
+		0.501f, 0.73f,
+		0.501f, 0.817f,
+		0.424f, 0.817f
 	};
-	std::copy(std::begin(lsprite_texture_coords), std::end(lsprite_texture_coords), sprite_texture_coords);
+	std::copy(std::begin(lsprite_UV_coords), std::end(lsprite_UV_coords), sprite_UV_coords);
 }

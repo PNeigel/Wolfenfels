@@ -55,6 +55,8 @@ bool Engine::Init()
 	// tell GL to only draw onto a pixel if the shape is closer to the viewer
 	glEnable(GL_DEPTH_TEST); // enable depth-testing
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -67,7 +69,7 @@ bool Engine::Init()
 
 void Engine::GameLoop()
 {
-	Renderer renderer(stage);
+	Renderer renderer(stage, player);
 	// Loop until the user closes the window
 	double elapsed = 0;
 	uint32_t framecount = 0;
@@ -81,11 +83,11 @@ void Engine::GameLoop()
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		GLuint MatrixID = glGetUniformLocation(texshader_program, "MVP");
-
-		//ComputeView();
+		glUseProgram(shaders[1]);
+		GLuint MatrixID = glGetUniformLocation(shaders[1], "MVP");
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &player.mvp[0][0]);
-		renderer.RenderAll(stage, texshader_program, bgshader_program);
+
+		renderer.RenderAll(stage, player, (GLuint*)&shaders[0]);
 
 		// put the stuff we've been drawing onto the display
 		glfwSwapBuffers(window);
@@ -139,7 +141,6 @@ void Engine::CreateShaders()
 		"layout(location = 0) in vec3 pos;"
 		"layout(location = 1) in vec2 UV_in;"
 		"layout(location = 2) in vec3 color_in;"
-		"uniform mat4 MVP;"
 		"out VertexData{"
 		"  vec2 UV;"
 		"  vec3 color;"
@@ -189,20 +190,21 @@ void Engine::CreateShaders()
 	glShaderSource(t_fs, 1, &texture_fshader, NULL);
 	glCompileShader(t_fs);
 
-	/*
-	shader_program = glCreateProgram();
-	glAttachShader(shader_program, fs);
-	glAttachShader(shader_program, vs);
-	glLinkProgram(shader_program);
-	*/
-
-	bgshader_program = glCreateProgram();
+	GLuint bgshader_program = glCreateProgram();
 	glAttachShader(bgshader_program, c_fs);
 	glAttachShader(bgshader_program, s_vs);
 	glLinkProgram(bgshader_program);
+	shaders.push_back(bgshader_program);
 
-	texshader_program = glCreateProgram();
+	GLuint texshader_program = glCreateProgram();
 	glAttachShader(texshader_program, t_fs);
 	glAttachShader(texshader_program, p_vs);
 	glLinkProgram(texshader_program);
+	shaders.push_back(texshader_program);
+
+	GLuint player_shader = glCreateProgram();
+	glAttachShader(player_shader, t_fs);
+	glAttachShader(player_shader, s_vs);
+	glLinkProgram(player_shader);
+	shaders.push_back(player_shader);
 }
