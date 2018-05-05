@@ -157,6 +157,12 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Stage.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\color.frag" />
+    <None Include="Shader\projection.vert" />
+    <None Include="Shader\straight.vert" />
+    <None Include="Shader\texture.frag" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

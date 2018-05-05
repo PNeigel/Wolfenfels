@@ -24,6 +24,7 @@ public:
 	void GameLoop();
 	void UpdateKeystates();
 
+	string ReadShaderGLSL(string filename);
 	void CreateShaders();
 
 	Player player;

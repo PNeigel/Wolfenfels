@@ -7,7 +7,6 @@ using namespace std;
 
 Player::Player()
 {
-	cout << glm::to_string(pos) << endl;
 	proj_mat = glm::perspective(glm::radians(FOV), (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f);
 	ComputeView();
 	SetSpriteCoords();

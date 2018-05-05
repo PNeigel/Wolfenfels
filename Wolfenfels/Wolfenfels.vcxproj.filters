@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{78cefd23-ccab-43d2-b3d8-7b3b6ecb4acc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -50,5 +53,19 @@
     <ClInclude Include="Renderer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\projection.vert">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\straight.vert">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\color.frag">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\texture.frag">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

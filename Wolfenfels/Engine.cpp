@@ -117,62 +117,33 @@ void Engine::UpdateKeystates()
 	keystates[Buttons::RIGHT] = glfwGetKey(window, GLFW_KEY_RIGHT);
 }
 
+string Engine::ReadShaderGLSL(string filename)
+{
+	ifstream shader_f(filename);
+	stringstream shader_str;
+	string tmp_str;
+	getline(shader_f, tmp_str);
+	shader_str << tmp_str << endl;
+	while (getline(shader_f, tmp_str)) {
+		shader_str << tmp_str;
+	}
+	shader_f.close();
+	return shader_str.str();
+}
+
 void Engine::CreateShaders()
 {
+	string projv_str = ReadShaderGLSL("Shader/projection.vert");
+	const char* projection_vshader = projv_str.c_str();
 
-	const char* projection_vshader =
-		"#version 400\n" // Version of GLSL
-		"layout(location = 0) in vec3 pos;"
-		"layout(location = 1) in vec2 UV_in;"
-		"layout(location = 2) in vec3 color_in;"
-		"uniform mat4 MVP;"
-		"out VertexData{"
-		"  vec2 UV;"
-		"  vec3 color;"
-		"} outp;"
-		"void main() {"
-		"  outp.UV = UV_in;"
-		"  outp.color = color_in;"
-		"  gl_Position = MVP * vec4(pos, 1.0);"
-		"}";
+	string straightv_str = ReadShaderGLSL("Shader/straight.vert");
+	const char* straight_vshader = straightv_str.c_str();
 
-	const char* straight_vshader =
-		"#version 400\n" // Version of GLSL
-		"layout(location = 0) in vec3 pos;"
-		"layout(location = 1) in vec2 UV_in;"
-		"layout(location = 2) in vec3 color_in;"
-		"out VertexData{"
-		"  vec2 UV;"
-		"  vec3 color;"
-		"} outp;"
-		"void main() {"
-		"  outp.UV = UV_in;"
-		"  outp.color = color_in;"
-		"  gl_Position = vec4(pos, 1.0);"
-		"}";
+	string colorf_str = ReadShaderGLSL("Shader/color.frag");
+	const char* color_fshader = colorf_str.c_str();
 
-	const char* color_fshader =
-		"#version 400\n"
-		"in VertexData{"
-		"  vec2 UV;"
-		"  vec3 color;"
-		"} inp;"
-		"out vec4 frag_color;"
-		"void main() {"
-		"  frag_color = vec4(inp.color, 1.0);"
-		"}";
-
-	const char* texture_fshader =
-		"#version 400\n"
-		"in VertexData{"
-		"  vec2 UV;"
-		"  vec3 color;"
-		"} inp;"
-		"out vec4 frag_color;"
-		"uniform sampler2D tex;"
-		"void main() {"
-		"  frag_color = texture( tex, inp.UV );"
-		"}";
+	string texturef_str = ReadShaderGLSL("Shader/texture.frag");
+	const char* texture_fshader = texturef_str.c_str();
 
 	GLuint p_vs = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(p_vs, 1, &projection_vshader, NULL);
