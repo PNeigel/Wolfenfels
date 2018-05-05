@@ -1,4 +1,4 @@
-- GLFW/GL/Engine seperate from game logic
+- Keep VBO / VOA ID's, needed to free VRAM
 - Clean up shaders
 - Change Keystate from PollEvent and not every frame
 - Create stage data format
