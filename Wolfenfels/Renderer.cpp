@@ -13,7 +13,7 @@ Renderer::Renderer(Stage & stage, Player & player)
 	stage_walls_vao = VAllocStageWalls(stage);
 
 	unsigned char* player_texture_buffer = new unsigned char[player_texture_width * player_texture_height * 4];
-	PNGtoTexture("weapons.png", player_texture_width, player_texture_height, player_texture_buffer);
+	PNGtoTexture("pistol.png", player_texture_width, player_texture_height, player_texture_buffer);
 	player_textureID = VAllocPlayerTexture(player_texture_buffer);
 	delete[] player_texture_buffer;
 	player_vao = VAllocPlayersprite(player);
@@ -104,9 +104,13 @@ GLuint Renderer::VAllocBG(Stage & stage)
 	return vao;
 }
 
-void Renderer::RenderStageWalls(Stage & stage, GLuint shader, GLuint vao)
+void Renderer::RenderStageWalls(Stage & stage, Player & player, GLuint shader, GLuint vao)
 {
 	glUseProgram(shader);
+
+	GLuint MatrixID = glGetUniformLocation(shader, "MVP");
+	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &player.mvp[0][0]);
+
 	glBindTexture(GL_TEXTURE_2D, wall_textureID);
 	glBindVertexArray(vao);
 	glDrawArrays(GL_QUADS, 0, stage.n_wallverts);
@@ -123,7 +127,7 @@ void Renderer::RenderBG(Stage & stage, GLuint shader, GLuint vao)
 void Renderer::RenderAll(Stage & stage, Player & player, GLuint* shader)
 {
 	RenderBG(stage, shader[0], bg_vao);
-	RenderStageWalls(stage, shader[1], stage_walls_vao);
+	RenderStageWalls(stage, player, shader[1], stage_walls_vao);
 	RenderPlayer(player, shader[2], player_vao);
 }
 
@@ -134,9 +138,9 @@ GLuint Renderer::VAllocPlayersprite(Player & player)
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_pos); // Bind as current buffer in OpenGL's state machine
 	glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), player.spritecoords, GL_STATIC_DRAW);
 
-	GLuint vbo_col = 0;
-	glGenBuffers(1, &vbo_col); // Generate empty buffer
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_col); // Bind as current buffer in OpenGL's state machine
+	vbo_player_uv = 0;
+	glGenBuffers(1, &vbo_player_uv); // Generate empty buffer
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_player_uv); // Bind as current buffer in OpenGL's state machine
 	glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), player.sprite_UV_coords, GL_STATIC_DRAW);
 
 	GLuint vao = 0;
@@ -146,10 +150,16 @@ GLuint Renderer::VAllocPlayersprite(Player & player)
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_pos);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_col);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_player_uv);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 
 	return vao;
+}
+
+void Renderer::UpdatePlayerUV(float uv_xy[8])
+{
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_player_uv);
+	glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), uv_xy, GL_STATIC_DRAW);
 }
 
 GLuint Renderer::VAllocPlayerTexture(unsigned char * texture_buffer)
@@ -169,7 +179,9 @@ GLuint Renderer::VAllocPlayerTexture(unsigned char * texture_buffer)
 
 void Renderer::RenderPlayer(Player & player, GLuint shader, GLuint vao)
 {
+	UpdatePlayerUV(player.sprite_UV_coords);
 	glUseProgram(shader);
+
 	glBindTexture(GL_TEXTURE_2D, player_textureID);
 	glBindVertexArray(vao);
 	glDrawArrays(GL_QUADS, 0, 4);

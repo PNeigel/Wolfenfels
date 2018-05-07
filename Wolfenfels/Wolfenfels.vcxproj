@@ -149,6 +149,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Stage.cpp" />
+    <ClCompile Include="TextureAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
@@ -156,12 +157,14 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Stage.h" />
+    <ClInclude Include="TextureAnimation.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\color.frag" />
     <None Include="Shader\projection.vert" />
     <None Include="Shader\straight.vert" />
     <None Include="Shader\texture.frag" />
+    <None Include="Shader\texture_anim.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

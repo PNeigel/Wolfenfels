@@ -1,5 +1,6 @@
 #include "Engine.h"
 
+#include <windows.h>
 #include <sstream>
 
 using namespace std;
@@ -72,6 +73,7 @@ void Engine::GameLoop()
 	Renderer renderer(stage, player);
 	// Loop until the user closes the window
 	double elapsed = 0;
+	double cur_msec = 0;
 	uint32_t framecount = 0;
 	while (!glfwWindowShouldClose(window)) {
 		double start_time = glfwGetTime();
@@ -82,10 +84,6 @@ void Engine::GameLoop()
 		// wipe the drawing surface clear
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		glUseProgram(shaders[1]);
-		GLuint MatrixID = glGetUniformLocation(shaders[1], "MVP");
-		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &player.mvp[0][0]);
 
 		renderer.RenderAll(stage, player, (GLuint*)&shaders[0]);
 
@@ -96,6 +94,10 @@ void Engine::GameLoop()
 
 		// Calculate and display FPS
 		framecount++;
+		cur_msec = glfwGetTime() - start_time;
+		if (cur_msec*1000. < 16.66) {
+			Sleep(16.66 - cur_msec*1000.);
+		}
 		elapsed += glfwGetTime() - start_time;
 		if (elapsed > 0.5) {
 			stringstream wintitle;
@@ -115,6 +117,7 @@ void Engine::UpdateKeystates()
 	keystates[Buttons::DOWN] = glfwGetKey(window, GLFW_KEY_DOWN);
 	keystates[Buttons::LEFT] = glfwGetKey(window, GLFW_KEY_LEFT);
 	keystates[Buttons::RIGHT] = glfwGetKey(window, GLFW_KEY_RIGHT);
+	keystates[Buttons::SHOOT] = glfwGetKey(window, GLFW_KEY_SPACE);
 }
 
 string Engine::ReadShaderGLSL(string filename)
@@ -145,6 +148,9 @@ void Engine::CreateShaders()
 	string texturef_str = ReadShaderGLSL("Shader/texture.frag");
 	const char* texture_fshader = texturef_str.c_str();
 
+	string texanimf_str = ReadShaderGLSL("Shader/texture_anim.frag");
+	const char* texanim_fshader = texanimf_str.c_str();
+
 	GLuint p_vs = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(p_vs, 1, &projection_vshader, NULL);
 	glCompileShader(p_vs);
@@ -160,6 +166,10 @@ void Engine::CreateShaders()
 	GLuint t_fs = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(t_fs, 1, &texture_fshader, NULL);
 	glCompileShader(t_fs);
+
+	GLuint ta_fs = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(ta_fs, 1, &texanim_fshader, NULL);
+	glCompileShader(ta_fs);
 
 	GLuint bgshader_program = glCreateProgram();
 	glAttachShader(bgshader_program, c_fs);

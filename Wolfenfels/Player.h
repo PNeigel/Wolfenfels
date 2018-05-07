@@ -1,6 +1,7 @@
 #pragma once
 
 #include "globalenums.h"
+#include "TextureAnimation.h"
 
 #include <glm.hpp>
 #include <ext.hpp>
@@ -28,10 +29,10 @@ public:
 	float sprite_UV_coords[8];
 
 	glm::vec3 pos{ 0.0f, -3.0f, 0.5f };
-	float move_speed = 0.02f;
+	float move_speed = 0.04f;
 
 	float yaw = 00.0f;
-	float yaw_delta = 1.0f;
+	float yaw_delta = 1.5f;
 
 	glm::mat4 view_mat{ 1.0f };
 	glm::vec3 view_dir{ 1.0f };
@@ -39,6 +40,8 @@ public:
 	glm::mat4 proj_mat;
 
 	glm::mat4 mvp;
+
+	TextureAnimation weapon_anim;
 
 };
 

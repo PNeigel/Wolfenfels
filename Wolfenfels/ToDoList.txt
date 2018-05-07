@@ -1,4 +1,5 @@
 - Keep VBO / VOA ID's, needed to free VRAM
+- use rect instead of coordinates
 - Clean up shaders
 - Change Keystate from PollEvent and not every frame
 - Create stage data format

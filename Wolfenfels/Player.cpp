@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "globalenums.h"
 
 #include <iostream>
 
@@ -10,6 +11,14 @@ Player::Player()
 	proj_mat = glm::perspective(glm::radians(FOV), (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f);
 	ComputeView();
 	SetSpriteCoords();
+	weapon_anim.animation = { 0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4 };
+	weapon_anim.UV_rects.push_back(TextureAnimation::rect(0.0f, 0.0f, 0.2, 1.0));
+	weapon_anim.UV_rects.push_back(TextureAnimation::rect(0.2f, 0.0f, 0.2, 1.0));
+	weapon_anim.UV_rects.push_back(TextureAnimation::rect(0.4f, 0.0f, 0.2, 1.0));
+	weapon_anim.UV_rects.push_back(TextureAnimation::rect(0.8f, 0.0f, 0.2, 1.0));
+	weapon_anim.UV_rects.push_back(TextureAnimation::rect(0.8f, 0.0f, 0.2, 1.0));
+	weapon_anim.n_frames = 20;
+	weapon_anim.n_images = 5;
 }
 
 
@@ -47,6 +56,13 @@ void Player::Update(int* keystates)
 {
 	Move(keystates);
 	ComputeView();
+	weapon_anim.Update();
+	array<float, 8> uv_array = weapon_anim.GetCurrentUV();
+	std::copy(uv_array.begin(), uv_array.end(), sprite_UV_coords);
+	if (keystates[Buttons::SHOOT]) {
+		weapon_anim.playing = true;
+		keystates[Buttons::SHOOT] = false;
+	}
 	cout << "\r";
 	cout << "Yaw: " << yaw;
 	cout << "\tPos: " << glm::to_string(pos);
@@ -55,10 +71,10 @@ void Player::Update(int* keystates)
 void Player::SetSpriteCoords()
 {
 	float lspritecoords[] = {
-		-0.2f, -1.0f, 0.0f,
-		0.2f, -1.0f, 0.0f,
-		0.2f, -0.2f, 0.0f,
-		-0.2f, -0.2f, 0.0f
+		-0.25f, -1.0f, 0.0f,
+		0.15f, -1.0f, 0.0f,
+		0.15f, -0.2f, 0.0f,
+		-0.25f, -0.2f, 0.0f
 	};
 	std::copy(std::begin(lspritecoords), std::end(lspritecoords), spritecoords);
 
