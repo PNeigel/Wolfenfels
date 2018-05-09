@@ -73,14 +73,16 @@ void Engine::GameLoop()
 	Renderer renderer(stage, player);
 	// Loop until the user closes the window
 	double elapsed = 0;
-	double cur_msec = 0;
+	double delta_time = 0;
+	double loop_start, render_start;
 	uint32_t framecount = 0;
 	while (!glfwWindowShouldClose(window)) {
-		double start_time = glfwGetTime();
+		loop_start = glfwGetTime();
 
 		UpdateKeystates();
-		player.Update(keystates);
+		player.Update(delta_time, keystates);
 
+		render_start = glfwGetTime();
 		// wipe the drawing surface clear
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -91,14 +93,10 @@ void Engine::GameLoop()
 		glfwSwapBuffers(window);
 		// update other events like input handling 
 		glfwPollEvents();
-
+		delta_time = glfwGetTime() - render_start;
 		// Calculate and display FPS
 		framecount++;
-		cur_msec = glfwGetTime() - start_time;
-		if (cur_msec*1000. < 16.66) {
-			Sleep(16.66 - cur_msec*1000.);
-		}
-		elapsed += glfwGetTime() - start_time;
+		elapsed += glfwGetTime() - loop_start;
 		if (elapsed > 0.5) {
 			stringstream wintitle;
 			wintitle << "Wolfenfels | FPS: " << framecount / elapsed;

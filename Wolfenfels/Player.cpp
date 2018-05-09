@@ -38,23 +38,23 @@ void Player::ComputeView()
 	mvp = proj_mat * view_mat;
 }
 
-void Player::Move(int* keystates)
+void Player::Move(double delta_time, int* keystates)
 {
 	// Forwards, backwards
 	if (keystates[Buttons::UP]) {
-		pos += view_dir * move_speed;
+		pos += view_dir * move_vel * delta_time;
 	}
-	else if (keystates[Buttons::DOWN]) pos -= view_dir * move_speed;
+	else if (keystates[Buttons::DOWN]) pos -= view_dir * move_vel * delta_time;
 
-	if (keystates[Buttons::LEFT]) yaw += yaw_delta;
-	else if (keystates[Buttons::RIGHT]) yaw -= yaw_delta;
+	if (keystates[Buttons::LEFT]) yaw += yaw_vel * delta_time;
+	else if (keystates[Buttons::RIGHT]) yaw -= yaw_vel * delta_time;
 	if (yaw > 360) yaw -= 360;
 	if (yaw < 0) yaw += 360;
 }
 
-void Player::Update(int* keystates)
+void Player::Update(double delta_time, int* keystates)
 {
-	Move(keystates);
+	Move(delta_time, keystates);
 	if (keystates[Buttons::SHOOT]) {
 		weapon_anim.playing = true;
 		keystates[Buttons::SHOOT] = false;

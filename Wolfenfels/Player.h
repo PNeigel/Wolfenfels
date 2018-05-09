@@ -19,9 +19,9 @@ public:
 	~Player();
 
 	void ComputeView();
-	void Move(int* keystates);
+	void Move(double delta_time, int* keystates);
 
-	void Update(int* keystates);
+	void Update(double delta_time, int* keystates);
 
 	void SetSpriteCoords();
 
@@ -30,10 +30,10 @@ public:
 	float std_UV_coords[8];
 
 	glm::vec3 pos{ 0.0f, -3.0f, 0.5f };
-	float move_speed = 0.04f;
+	float move_vel = 3.0f;
 
 	float yaw = 00.0f;
-	float yaw_delta = 1.5f;
+	float yaw_vel = 100.0f;
 
 	glm::mat4 view_mat{ 1.0f };
 	glm::vec3 view_dir{ 1.0f };
