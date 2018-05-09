@@ -93,7 +93,7 @@ void Engine::GameLoop()
 		glfwSwapBuffers(window);
 		// update other events like input handling 
 		glfwPollEvents();
-		delta_time = glfwGetTime() - render_start;
+		delta_time = glfwGetTime() - loop_start;
 		// Calculate and display FPS
 		framecount++;
 		elapsed += glfwGetTime() - loop_start;

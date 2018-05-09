@@ -7,14 +7,14 @@
 Renderer::Renderer(Stage & stage, Player & player)
 {
 	unsigned char* wall_texture_buffer = new unsigned char[wall_texture_width * wall_texture_height * 4];
-	PNGtoTexture("wall.png", wall_texture_width, wall_texture_height, wall_texture_buffer);
+	PNGtoTexture("Assets/wall.png", wall_texture_width, wall_texture_height, wall_texture_buffer);
 	wall_textureID = VAllocWallTexture(wall_texture_buffer);
 	delete[] wall_texture_buffer;
 	bg_vao = VAllocBG(stage);
 	stage_walls_vao = VAllocStageWalls(stage);
 
 	unsigned char* player_texture_buffer = new unsigned char[player_texture_width * player_texture_height * 4];
-	PNGtoTexture("pistol.png", player_texture_width, player_texture_height, player_texture_buffer);
+	PNGtoTexture("Assets/pistol.png", player_texture_width, player_texture_height, player_texture_buffer);
 	player_textureID = VAllocPlayerTexture(player_texture_buffer);
 	delete[] player_texture_buffer;
 	player_vao = VAllocPlayersprite(player);

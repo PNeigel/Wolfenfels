@@ -11,14 +11,17 @@ Player::Player()
 	proj_mat = glm::perspective(glm::radians(FOV), (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f);
 	ComputeView();
 	SetSpriteCoords();
-	weapon_anim.animation = { 0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4 };
-	weapon_anim.UV_rects.push_back(TextureAnimation::rect(0.0f, 0.0f, 0.2, 1.0));
-	weapon_anim.UV_rects.push_back(TextureAnimation::rect(0.2f, 0.0f, 0.2, 1.0));
-	weapon_anim.UV_rects.push_back(TextureAnimation::rect(0.4f, 0.0f, 0.2, 1.0));
-	weapon_anim.UV_rects.push_back(TextureAnimation::rect(0.605f, 0.0f, 0.2, 1.0));
-	weapon_anim.UV_rects.push_back(TextureAnimation::rect(0.805f, 0.0f, 0.2, 1.0));
-	weapon_anim.n_frames = 20;
-	weapon_anim.n_images = 5;
+	weapon_anim.animation = { TextureAnimation::FrameDuration{0, 0.03},
+							TextureAnimation::FrameDuration{ 1, 0.03 }, 
+							TextureAnimation::FrameDuration{ 2, 0.06 }, 
+							TextureAnimation::FrameDuration{ 3, 0.06 }, 
+							TextureAnimation::FrameDuration{ 4, 0.06 }};
+	weapon_anim.UV_rects.push_back(Rect(0.0f, 0.0f, 0.2, 1.0));
+	weapon_anim.UV_rects.push_back(Rect(0.2f, 0.0f, 0.2, 1.0));
+	weapon_anim.UV_rects.push_back(Rect(0.4f, 0.0f, 0.2, 1.0));
+	weapon_anim.UV_rects.push_back(Rect(0.605f, 0.0f, 0.2, 1.0));
+	weapon_anim.UV_rects.push_back(Rect(0.805f, 0.0f, 0.2, 1.0));
+	weapon_anim.duration = 0.24;
 }
 
 
@@ -61,7 +64,7 @@ void Player::Update(double delta_time, int* keystates)
 	}
 	ComputeView();
 	cout << "\r(" << pos.x << ", " << pos.y << ")";
-	weapon_anim.Update();
+	weapon_anim.Update(delta_time);
 	if (weapon_anim.playing) {
 		array<float, 8> uv_array = weapon_anim.GetCurrentUV();
 		std::copy(uv_array.begin(), uv_array.end(), sprite_UV_coords);
