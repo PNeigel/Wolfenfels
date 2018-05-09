@@ -27,6 +27,7 @@ public:
 
 	float spritecoords[12];
 	float sprite_UV_coords[8];
+	float std_UV_coords[8];
 
 	glm::vec3 pos{ 0.0f, -3.0f, 0.5f };
 	float move_speed = 0.04f;

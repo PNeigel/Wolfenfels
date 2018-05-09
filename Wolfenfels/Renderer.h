@@ -3,11 +3,13 @@
 #include <GL/glew.h>
 #include "Stage.h"
 #include "Player.h"
+#include "Utils.h"
 
 class Renderer
 {
 public:
 	Renderer(Stage & stage, Player & player);
+	Renderer(vector<GLuint>* shader);
 	~Renderer();
 
 	void PNGtoTexture(string filename, int width, int height, unsigned char* buffer);
@@ -39,5 +41,7 @@ public:
 
 	GLuint vbo_player_uv;
 	GLuint player_vao;
+
+	vector<GLuint>* shader;
 };
 

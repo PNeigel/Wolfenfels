@@ -15,8 +15,8 @@ Player::Player()
 	weapon_anim.UV_rects.push_back(TextureAnimation::rect(0.0f, 0.0f, 0.2, 1.0));
 	weapon_anim.UV_rects.push_back(TextureAnimation::rect(0.2f, 0.0f, 0.2, 1.0));
 	weapon_anim.UV_rects.push_back(TextureAnimation::rect(0.4f, 0.0f, 0.2, 1.0));
-	weapon_anim.UV_rects.push_back(TextureAnimation::rect(0.8f, 0.0f, 0.2, 1.0));
-	weapon_anim.UV_rects.push_back(TextureAnimation::rect(0.8f, 0.0f, 0.2, 1.0));
+	weapon_anim.UV_rects.push_back(TextureAnimation::rect(0.605f, 0.0f, 0.2, 1.0));
+	weapon_anim.UV_rects.push_back(TextureAnimation::rect(0.805f, 0.0f, 0.2, 1.0));
 	weapon_anim.n_frames = 20;
 	weapon_anim.n_images = 5;
 }
@@ -55,17 +55,22 @@ void Player::Move(int* keystates)
 void Player::Update(int* keystates)
 {
 	Move(keystates);
-	ComputeView();
-	weapon_anim.Update();
-	array<float, 8> uv_array = weapon_anim.GetCurrentUV();
-	std::copy(uv_array.begin(), uv_array.end(), sprite_UV_coords);
 	if (keystates[Buttons::SHOOT]) {
 		weapon_anim.playing = true;
 		keystates[Buttons::SHOOT] = false;
 	}
-	cout << "\r";
-	cout << "Yaw: " << yaw;
-	cout << "\tPos: " << glm::to_string(pos);
+	ComputeView();
+	cout << "\r(" << pos.x << ", " << pos.y << ")";
+	weapon_anim.Update();
+	if (weapon_anim.playing) {
+		array<float, 8> uv_array = weapon_anim.GetCurrentUV();
+		std::copy(uv_array.begin(), uv_array.end(), sprite_UV_coords);
+	}
+	else {
+		// If anim not playing set current UV to the standard UV
+		// will be copied every frame that is not animated, performance?
+		std::copy(begin(std_UV_coords), end(std_UV_coords), sprite_UV_coords);
+	}
 }
 
 void Player::SetSpriteCoords()
@@ -73,16 +78,16 @@ void Player::SetSpriteCoords()
 	float lspritecoords[] = {
 		-0.25f, -1.0f, 0.0f,
 		0.15f, -1.0f, 0.0f,
-		0.15f, -0.2f, 0.0f,
-		-0.25f, -0.2f, 0.0f
+		0.15f, 0.1f, 0.0f,
+		-0.25f, 0.1f, 0.0f
 	};
 	std::copy(std::begin(lspritecoords), std::end(lspritecoords), spritecoords);
 
-	float lsprite_UV_coords[] = {
-		0.424f, 0.73f,
-		0.501f, 0.73f,
-		0.501f, 0.817f,
-		0.424f, 0.817f
+	float lstd_UV_coords[] = {
+		0.0f, 0.0f,
+		0.2f, 0.0f,
+		0.2f, 1.0f,
+		0.0f, 1.0f
 	};
-	std::copy(std::begin(lsprite_UV_coords), std::end(lsprite_UV_coords), sprite_UV_coords);
+	std::copy(std::begin(lstd_UV_coords), std::end(lstd_UV_coords), std_UV_coords);
 }

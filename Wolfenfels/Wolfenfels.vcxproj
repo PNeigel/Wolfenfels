@@ -158,6 +158,7 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="TextureAnimation.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\color.frag" />

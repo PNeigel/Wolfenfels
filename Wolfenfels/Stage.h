@@ -32,6 +32,7 @@ public:
 	void SetBGVerts();
 
 	void ReadStageFromFile(string filename);
+	void ReadStageFromPNG(string filename);
 
 	vector<Wall> walls;
 	float* vertcoords;

@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include "globalenums.h"
 
 #include <png.hpp>
 
@@ -20,6 +21,11 @@ Renderer::Renderer(Stage & stage, Player & player)
 
 }
 
+Renderer::Renderer(vector<GLuint>* shader) :
+	shader(shader)
+{
+}
+
 
 Renderer::~Renderer()
 {
@@ -36,6 +42,7 @@ void Renderer::PNGtoTexture(string filename, int width, int height, unsigned cha
 			buffer[(height - 1 - i) * width * 4 + j * 4 + 2] = img_buf.get_pixel(j, i).blue;
 			buffer[(height - 1 - i) * width * 4 + j * 4 + 3] = img_buf.get_pixel(j, i).alpha;
 		}
+		int j = 0;
 	}
 }
 

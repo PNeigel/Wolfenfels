@@ -59,6 +59,9 @@
     <ClInclude Include="TextureAnimation.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\projection.vert">

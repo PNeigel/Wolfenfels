@@ -37,7 +37,7 @@ public:
 
 	unsigned int n_images;
 	unsigned int n_frames;
-	unsigned int current_frame = 0;
+	int current_frame = -1;
 	vector<rect> UV_rects;
 	vector<unsigned int> animation;
 };
