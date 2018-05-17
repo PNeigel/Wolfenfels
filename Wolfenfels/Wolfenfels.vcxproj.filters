@@ -39,6 +39,12 @@
     <ClCompile Include="TextureAnimation.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionHandler.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Stage.h">
@@ -60,6 +66,12 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionHandler.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

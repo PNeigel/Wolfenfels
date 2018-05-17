@@ -6,6 +6,9 @@ using namespace std;
 
 struct Rect {
 
+	Rect() {
+		Rect(0.0, 0.0, 0.0, 0.0);
+	}
 	Rect(float base_x, float base_y, float width, float height) :
 		width(width), height(height) {
 		base = glm::vec2{ base_x, base_y };

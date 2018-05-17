@@ -70,39 +70,41 @@ bool Engine::Init()
 
 void Engine::GameLoop()
 {
-	Renderer renderer(stage, player);
-	// Loop until the user closes the window
+	Renderer renderer(stage, player, enemy);
+
 	double elapsed = 0;
-	double delta_time = 0;
-	double loop_start, render_start;
+	const double delta_time = 1./128;
+	double accumulator = 0;
+	double loop_start;
 	uint32_t framecount = 0;
+	uint32_t ticks = 0;
 	while (!glfwWindowShouldClose(window)) {
 		loop_start = glfwGetTime();
 
-		UpdateKeystates();
-		player.Update(delta_time, keystates);
+		while (accumulator >= delta_time) {
+			UpdateKeystates();
+			player.Update(delta_time, coll, stage, keystates);
+			enemy.Tick(delta_time, player);
+			accumulator -= delta_time;
+			ticks++;
+		}
 
-		render_start = glfwGetTime();
-		// wipe the drawing surface clear
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		renderer.RenderAll(stage, player, (GLuint*)&shaders[0]);
-
-		// put the stuff we've been drawing onto the display
+		renderer.RenderAll(stage, player, enemy, (GLuint*)&shaders[0]);
 		glfwSwapBuffers(window);
-		// update other events like input handling 
 		glfwPollEvents();
-		delta_time = glfwGetTime() - loop_start;
-		// Calculate and display FPS
 		framecount++;
+		
+		accumulator += glfwGetTime() - loop_start;
 		elapsed += glfwGetTime() - loop_start;
 		if (elapsed > 0.5) {
 			stringstream wintitle;
-			wintitle << "Wolfenfels | FPS: " << framecount / elapsed;
+			wintitle << "Wolfenfels | FPS: " << framecount / elapsed << "\t | TicksPS: " << ticks / elapsed;
 			glfwSetWindowTitle(window, wintitle.str().c_str());
 			elapsed = 0;
 			framecount = 0;
+			ticks = 0;
 		}
 	}
 

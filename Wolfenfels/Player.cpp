@@ -1,5 +1,4 @@
 #include "Player.h"
-#include "globalenums.h"
 
 #include <iostream>
 
@@ -8,7 +7,8 @@ using namespace std;
 
 Player::Player()
 {
-	proj_mat = glm::perspective(glm::radians(FOV), (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f);
+	proj_mat = glm::perspective(glm::radians(FOV), (float)WIDTH / (float)HEIGHT, 0.01f, 1000.0f);
+	collision_rect = Rect(pos.x-coll_width/2.0, pos.y-coll_height/2.0, coll_width, coll_height);
 	ComputeView();
 	SetSpriteCoords();
 	weapon_anim.animation = { TextureAnimation::FrameDuration{0, 0.03},
@@ -41,13 +41,19 @@ void Player::ComputeView()
 	mvp = proj_mat * view_mat;
 }
 
-void Player::Move(double delta_time, int* keystates)
+void Player::Move(double delta_time, CollisionHandler& coll, Stage& stage, int* keystates)
 {
 	// Forwards, backwards
 	if (keystates[Buttons::UP]) {
-		pos += view_dir * move_vel * delta_time;
+		glm::vec2 move = coll.TestMove(*this, stage, delta_time, 1.0);
+		pos.x += move.x * move_vel * delta_time;
+		pos.y += move.y * move_vel * delta_time;
 	}
-	else if (keystates[Buttons::DOWN]) pos -= view_dir * move_vel * delta_time;
+	else if (keystates[Buttons::DOWN]) {
+		glm::vec2 move = coll.TestMove(*this, stage, delta_time, -1.0);
+		pos.x += move.x * move_vel * delta_time;
+		pos.y += move.y * move_vel * delta_time;
+	}
 
 	if (keystates[Buttons::LEFT]) yaw += yaw_vel * delta_time;
 	else if (keystates[Buttons::RIGHT]) yaw -= yaw_vel * delta_time;
@@ -55,9 +61,10 @@ void Player::Move(double delta_time, int* keystates)
 	if (yaw < 0) yaw += 360;
 }
 
-void Player::Update(double delta_time, int* keystates)
+void Player::Update(double delta_time, CollisionHandler& coll, Stage& stage, int* keystates)
 {
-	Move(delta_time, keystates);
+	Move(delta_time, coll, stage, keystates);
+	collision_rect = Rect(pos.x - coll_width / 2.0, pos.y - coll_height / 2.0, coll_width, coll_height);
 	if (keystates[Buttons::SHOOT]) {
 		weapon_anim.playing = true;
 		keystates[Buttons::SHOOT] = false;
@@ -79,10 +86,10 @@ void Player::Update(double delta_time, int* keystates)
 void Player::SetSpriteCoords()
 {
 	float lspritecoords[] = {
-		-0.25f, -1.0f, 0.0f,
-		0.15f, -1.0f, 0.0f,
-		0.15f, 0.1f, 0.0f,
-		-0.25f, 0.1f, 0.0f
+		-0.25f, -1.0f, -1.0f,
+		0.15f, -1.0f, -1.0f,
+		0.15f, 0.1f, -1.0f,
+		-0.25f, 0.1f, -1.0f
 	};
 	std::copy(std::begin(lspritecoords), std::end(lspritecoords), spritecoords);
 

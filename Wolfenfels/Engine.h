@@ -3,6 +3,7 @@
 #include "globalenums.h"
 #include "Player.h"
 #include "Stage.h"
+#include "CollisionHandler.h"
 #include "Renderer.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -29,6 +30,9 @@ public:
 
 	Player player;
 	Stage stage;
+	Enemy enemy;
+	CollisionHandler coll;
+
 
 	GLFWwindow* window;
 	int keystates[8];
