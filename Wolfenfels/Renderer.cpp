@@ -19,11 +19,11 @@ Renderer::Renderer(Stage & stage, Player & player, Enemy & enemy)
 	delete[] player_texture_buffer;
 	player_vao = VAllocPlayersprite(player);
 
-	unsigned char* cyclops_texture_buffer = new unsigned char[cyclops_tex_width * cyclops_tex_height * 4];
-	PNGtoTexture("Assets/Cyclops.png", cyclops_tex_width, cyclops_tex_height, cyclops_texture_buffer);
-	cyclops_texID = VAllocCyclopsTexture(cyclops_texture_buffer);
-	delete[] cyclops_texture_buffer;
-	cyclops_vao = VAllocCyclops(enemy);
+	unsigned char* enemy_texture_buffer = new unsigned char[enemy_tex_width * enemy_tex_height * 4];
+	PNGtoTexture("Assets/cyclops.png", enemy_tex_width, enemy_tex_height, enemy_texture_buffer);
+	enemy_texID = VAllocEnemyTexture(enemy_texture_buffer);
+	delete[] enemy_texture_buffer;
+	enemy_vao = VAllocEnemy(enemy);
 
 }
 
@@ -141,7 +141,7 @@ void Renderer::RenderAll(Stage & stage, Player & player, Enemy & enemy, GLuint* 
 {
 	RenderBG(stage, shader[0], bg_vao);
 	RenderStageWalls(stage, player, shader[1], stage_walls_vao);
-	RenderCyclops(player, enemy, shader[1], cyclops_vao);
+	RenderEnemy(player, enemy, shader[1], enemy_vao);
 	RenderPlayer(player, shader[2], player_vao);
 }
 
@@ -191,7 +191,7 @@ GLuint Renderer::VAllocPlayerTexture(unsigned char * texture_buffer)
 	return textureID;
 }
 
-GLuint Renderer::VAllocCyclops(Enemy & enemy)
+GLuint Renderer::VAllocEnemy(Enemy & enemy)
 {
 	GLuint vbo_pos = 0;
 	glGenBuffers(1, &vbo_pos); // Generate empty buffer
@@ -216,13 +216,13 @@ GLuint Renderer::VAllocCyclops(Enemy & enemy)
 	return vao;
 }
 
-GLuint Renderer::VAllocCyclopsTexture(unsigned char * texture_buffer)
+GLuint Renderer::VAllocEnemyTexture(unsigned char * texture_buffer)
 {
 	GLuint textureID;
 	glGenTextures(1, &textureID);
 
 	glBindTexture(GL_TEXTURE_2D, textureID);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, cyclops_tex_width, cyclops_tex_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_buffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, enemy_tex_width, enemy_tex_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_buffer);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -241,7 +241,7 @@ void Renderer::RenderPlayer(Player & player, GLuint shader, GLuint vao)
 	glDrawArrays(GL_QUADS, 0, 4);
 }
 
-void Renderer::RenderCyclops(Player & player, Enemy & enemy, GLuint shader, GLuint vao)
+void Renderer::RenderEnemy(Player & player, Enemy & enemy, GLuint shader, GLuint vao)
 {
 	glUseProgram(shader);
 
@@ -249,7 +249,7 @@ void Renderer::RenderCyclops(Player & player, Enemy & enemy, GLuint shader, GLui
 	glm::mat4 mvp = player.mvp * enemy.model_matrix;
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
 
-	glBindTexture(GL_TEXTURE_2D, cyclops_texID);
+	glBindTexture(GL_TEXTURE_2D, enemy_texID);
 	glBindVertexArray(vao);
 	glDrawArrays(GL_QUADS, 0, 4);
 }

@@ -27,11 +27,11 @@ public:
 	void UpdatePlayerUV(float uv_xy[8]); // 8 = 4 * vec2 uv coords
 	GLuint VAllocPlayerTexture(unsigned char * texture_buffer);
 
-	GLuint VAllocCyclops(Enemy & enemy);
-	GLuint VAllocCyclopsTexture(unsigned char * texture_buffer);
+	GLuint VAllocEnemy(Enemy & enemy);
+	GLuint VAllocEnemyTexture(unsigned char * texture_buffer);
 
 	void RenderPlayer(Player & player, GLuint shader, GLuint vao);
-	void RenderCyclops(Player & player, Enemy & enemy, GLuint shader, GLuint vao);
+	void RenderEnemy(Player & player, Enemy & enemy, GLuint shader, GLuint vao);
 	
 	GLuint wall_textureID;
 	GLsizei wall_texture_width = 512;
@@ -47,11 +47,11 @@ public:
 	GLuint vbo_player_uv;
 	GLuint player_vao;
 
-	GLuint cyclops_texID;
-	GLsizei cyclops_tex_width = 800;
-	GLsizei cyclops_tex_height = 817;
+	GLuint enemy_texID;
+	GLsizei enemy_tex_width = 800;
+	GLsizei enemy_tex_height = 817;
 
-	GLuint cyclops_vao;
+	GLuint enemy_vao;
 
 	vector<GLuint>* shader;
 };
