@@ -8,6 +8,8 @@
 #include <ext.hpp>
 #include <gtc/matrix_transform.hpp>
 
+class Enemy;
+
 class Player
 { // Acts both as the player and camera
 public:
@@ -24,6 +26,8 @@ public:
 
 	void Update(double delta_time, CollisionHandler& coll, Stage& stage, int* keystates);
 
+	void Shoot(vector<Enemy> & enemies);
+
 	void SetSpriteCoords();
 
 	float spritecoords[12];
@@ -32,6 +36,8 @@ public:
 
 	glm::vec3 pos{ 3.0f, 3.0f, 0.5f };
 	float move_vel = 3.0f;
+
+	float shoot_cd = 0.0;
 
 	float yaw = 00.0f;
 	float yaw_vel = 100.0f;

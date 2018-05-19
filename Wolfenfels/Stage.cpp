@@ -12,6 +12,8 @@ Stage::Stage(int stage_no)
 	ReadStageFromPNG("Stages/stage.png");
 	SetWallVerts();
 	SetBGVerts();
+
+	enemies.push_back(Enemy());
 }
 
 
@@ -162,6 +164,29 @@ void Stage::ReadStageFromPNG(string filename)
 					walls.push_back(wall);
 				}
 			}
+		}
+	}
+}
+
+void Stage::Tick(double delta_time, Player & player)
+{
+	if (enemies.size() > 0) {
+		int en_size = enemies.size();
+		for (int i = 0; i < enemies.size(); ++i) {
+			enemies[i].Tick(delta_time, player, *this);
+			if (enemies.size() != en_size) {
+				i--;
+			}
+		}
+	}
+}
+
+void Stage::RemoveEnemies()
+{
+	for (int i = 0; i < enemies.size(); ++i) {
+		if (enemies[i].current_hp <= 0) {
+			enemies.erase(enemies.begin() + i);
+			break;
 		}
 	}
 }

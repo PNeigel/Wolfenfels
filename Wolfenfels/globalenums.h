@@ -10,6 +10,6 @@ namespace Buttons {
 namespace Shader {
 	enum Shader
 	{
-		COLOR_SCREEN, TEXTURE_PROJ, TEXTURE_SCREEN	
+		COLOR_SCREEN, TEXTURE_PROJ, TEXTURE_SCREEN, COLOR_PROJ	
 	};
 }

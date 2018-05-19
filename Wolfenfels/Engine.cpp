@@ -70,7 +70,7 @@ bool Engine::Init()
 
 void Engine::GameLoop()
 {
-	Renderer renderer(stage, player, enemy);
+	Renderer renderer(stage, player, stage.enemies[0]);
 
 	double elapsed = 0;
 	const double delta_time = 1./128;
@@ -84,14 +84,14 @@ void Engine::GameLoop()
 		while (accumulator >= delta_time) {
 			UpdateKeystates();
 			player.Update(delta_time, coll, stage, keystates);
-			enemy.Tick(delta_time, player);
+			stage.Tick(delta_time, player);
 			accumulator -= delta_time;
 			ticks++;
 		}
 
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		renderer.RenderAll(stage, player, enemy, (GLuint*)&shaders[0]);
+		renderer.RenderAll(stage, player, (GLuint*)&shaders[0]);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		framecount++;
@@ -167,10 +167,6 @@ void Engine::CreateShaders()
 	glShaderSource(t_fs, 1, &texture_fshader, NULL);
 	glCompileShader(t_fs);
 
-	GLuint ta_fs = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(ta_fs, 1, &texanim_fshader, NULL);
-	glCompileShader(ta_fs);
-
 	GLuint bgshader_program = glCreateProgram();
 	glAttachShader(bgshader_program, c_fs);
 	glAttachShader(bgshader_program, s_vs);
@@ -188,4 +184,10 @@ void Engine::CreateShaders()
 	glAttachShader(player_shader, s_vs);
 	glLinkProgram(player_shader);
 	shaders.push_back(player_shader);
+
+	GLuint cproj_shader = glCreateProgram();
+	glAttachShader(cproj_shader, c_fs);
+	glAttachShader(cproj_shader, p_vs);
+	glLinkProgram(cproj_shader);
+	shaders.push_back(cproj_shader);
 }

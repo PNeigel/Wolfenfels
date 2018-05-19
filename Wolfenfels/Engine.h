@@ -30,7 +30,6 @@ public:
 
 	Player player;
 	Stage stage;
-	Enemy enemy;
 	CollisionHandler coll;
 
 

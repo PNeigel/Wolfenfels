@@ -4,10 +4,14 @@
 #include <ext.hpp>
 #include <png.hpp>
 #include "Utils.h"
+#include "Enemy.h"
 
 #include <GL/glew.h>
 
 #include <iostream>
+
+class Player;
+
 
 using namespace std;
 
@@ -54,7 +58,11 @@ public:
 
 	void ReadStageFromPNG(string filename);
 
+	void Tick(double delta_time, Player & player);
+	void RemoveEnemies();
+
 	vector<Wall> walls;
+	vector<Enemy> enemies;
 	float* vertcoords;
 	float* wall_UV_coords;
 	float bgverts[24];

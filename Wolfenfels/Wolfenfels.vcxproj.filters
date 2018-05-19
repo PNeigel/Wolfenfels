@@ -88,8 +88,5 @@
     <None Include="Shader\texture.frag">
       <Filter>Shader</Filter>
     </None>
-    <None Include="Shader\texture_anim.frag">
-      <Filter>Shader</Filter>
-    </None>
   </ItemGroup>
 </Project>

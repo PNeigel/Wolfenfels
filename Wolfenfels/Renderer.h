@@ -21,7 +21,7 @@ public:
 
 	void RenderStageWalls(Stage & stage, Player & player, GLuint shader, GLuint vao);
 	void RenderBG(Stage & stage, GLuint shader, GLuint vao);
-	void RenderAll(Stage & stage, Player & player, Enemy & enemy, GLuint* shader);
+	void RenderAll(Stage & stage, Player & player, GLuint* shader);
 
 	GLuint VAllocPlayersprite(Player & player);
 	void UpdatePlayerUV(float uv_xy[8]); // 8 = 4 * vec2 uv coords
@@ -32,6 +32,8 @@ public:
 
 	void RenderPlayer(Player & player, GLuint shader, GLuint vao);
 	void RenderEnemy(Player & player, Enemy & enemy, GLuint shader, GLuint vao);
+
+	void RenderLine(Player & player, GLuint shader, glm::vec3 start, glm::vec3 end);
 	
 	GLuint wall_textureID;
 	GLsizei wall_texture_width = 512;

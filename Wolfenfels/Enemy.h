@@ -2,6 +2,9 @@
 
 #include "Player.h"
 #include "glm.hpp"
+#include "Utils.h"
+
+class Stage;
 
 class Enemy
 {
@@ -9,7 +12,7 @@ public:
 	Enemy();
 	~Enemy();
 
-	void Tick(double delta_time, Player & player);
+	void Tick(double delta_time, Player & player, Stage & stage);
 
 	int max_hp;
 	int current_hp;
@@ -22,5 +25,7 @@ public:
 	float mesh[12];
 
 	float UV[8];
+
+	float coll_width = 0.6;
 };
 

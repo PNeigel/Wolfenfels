@@ -1,4 +1,6 @@
 #include "Player.h"
+#include "Stage.h"
+#include "Enemy.h"
 
 #include <iostream>
 
@@ -63,11 +65,12 @@ void Player::Move(double delta_time, CollisionHandler& coll, Stage& stage, int* 
 
 void Player::Update(double delta_time, CollisionHandler& coll, Stage& stage, int* keystates)
 {
+	if (shoot_cd > 0) shoot_cd -= delta_time;
 	Move(delta_time, coll, stage, keystates);
 	collision_rect = Rect(pos.x - coll_width / 2.0, pos.y - coll_height / 2.0, coll_width, coll_height);
-	if (keystates[Buttons::SHOOT]) {
-		weapon_anim.playing = true;
-		keystates[Buttons::SHOOT] = false;
+	if (keystates[Buttons::SHOOT] && shoot_cd <= 0.0) {
+		Shoot(stage.enemies);
+		shoot_cd = 0.5;
 	}
 	ComputeView();
 	cout << "\r(" << pos.x << ", " << pos.y << ")";
@@ -83,13 +86,38 @@ void Player::Update(double delta_time, CollisionHandler& coll, Stage& stage, int
 	}
 }
 
+void Player::Shoot(vector<Enemy> & enemies)
+{
+	weapon_anim.playing = true;
+
+	// check collision with enemies
+	// check if view_direction of player is between vectors to left and right side of enemy collision rect
+
+	for (Enemy &enemy : enemies) {
+		glm::vec2 perp{ enemy.dir.y * -1.0f, enemy.dir.x };
+		glm::vec2 right = glm::vec2(enemy.pos) + perp * enemy.coll_width/2.0 - glm::vec2(pos);
+		right = glm::normalize(right);
+		glm::vec2 left = glm::vec2(enemy.pos) - perp * enemy.coll_width/2.0 - glm::vec2(pos);
+		left = glm::normalize(left);
+		float alpha = glm::angle(right, left);
+		float toLeft = glm::angle(left, glm::vec2(view_dir));
+		float toRight = glm::angle(right, glm::vec2(view_dir));
+		if (toLeft < alpha && toRight < alpha) {
+			int damage = 10;
+			enemy.current_hp -= damage;
+			cout << "Hit! New HP: " << enemy.current_hp << endl;
+		}
+	}
+
+}
+
 void Player::SetSpriteCoords()
 {
 	float lspritecoords[] = {
-		-0.25f, -1.0f, -1.0f,
-		0.15f, -1.0f, -1.0f,
-		0.15f, 0.1f, -1.0f,
-		-0.25f, 0.1f, -1.0f
+		-0.27f, -1.0f, -1.0f,
+		0.13f, -1.0f, -1.0f,
+		0.13f, 0.1f, -1.0f,
+		-0.27f, 0.1f, -1.0f
 	};
 	std::copy(std::begin(lspritecoords), std::end(lspritecoords), spritecoords);
 
