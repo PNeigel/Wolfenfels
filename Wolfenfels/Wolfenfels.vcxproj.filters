@@ -16,6 +16,9 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{78cefd23-ccab-43d2-b3d8-7b3b6ecb4acc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Texture">
+      <UniqueIdentifier>{a70cab27-fb81-4b74-ab5b-d9847d4d5698}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -45,6 +48,12 @@
     <ClCompile Include="CollisionHandler.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="Texture\BasicTexture.cpp">
+      <Filter>Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture\TextureAtlas.cpp">
+      <Filter>Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Stage.h">
@@ -73,6 +82,12 @@
     </ClInclude>
     <ClInclude Include="CollisionHandler.h">
       <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture\TextureAtlas.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture\BasicTexture.h">
+      <Filter>Texture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

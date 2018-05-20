@@ -152,6 +152,8 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="TextureAnimation.cpp" />
+    <ClCompile Include="Texture\BasicTexture.cpp" />
+    <ClCompile Include="Texture\TextureAtlas.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CollisionHandler.h" />
@@ -162,6 +164,8 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="TextureAnimation.h" />
+    <ClInclude Include="Texture\BasicTexture.h" />
+    <ClInclude Include="Texture\TextureAtlas.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>

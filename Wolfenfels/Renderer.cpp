@@ -6,23 +6,18 @@
 
 Renderer::Renderer(Stage & stage, Player & player, Enemy & enemy)
 {
-	unsigned char* wall_texture_buffer = new unsigned char[wall_texture_width * wall_texture_height * 4];
-	PNGtoTexture("Assets/wall.png", wall_texture_width, wall_texture_height, wall_texture_buffer);
-	wall_textureID = VAllocWallTexture(wall_texture_buffer);
-	delete[] wall_texture_buffer;
+	BasicTexture* wall_texture = new BasicTexture("Assets/wall.png");
+	m_textures.push_back(wall_texture);
+
 	bg_vao = VAllocBG(stage);
 	stage_walls_vao = VAllocStageWalls(stage);
 
-	unsigned char* player_texture_buffer = new unsigned char[player_texture_width * player_texture_height * 4];
-	PNGtoTexture("Assets/pistol.png", player_texture_width, player_texture_height, player_texture_buffer);
-	player_textureID = VAllocPlayerTexture(player_texture_buffer);
-	delete[] player_texture_buffer;
+	TextureAtlas* player_texture = new TextureAtlas("Assets/pistol.png", 1, 5);
+	m_textures.push_back(player_texture);
 	player_vao = VAllocPlayersprite(player);
 
-	unsigned char* enemy_texture_buffer = new unsigned char[enemy_tex_width * enemy_tex_height * 4];
-	PNGtoTexture("Assets/cyclops.png", enemy_tex_width, enemy_tex_height, enemy_texture_buffer);
-	enemy_texID = VAllocEnemyTexture(enemy_texture_buffer);
-	delete[] enemy_texture_buffer;
+	BasicTexture* enemy_texture = new BasicTexture("Assets/Cyclops.png");
+	m_textures.push_back(enemy_texture);
 	enemy_vao = VAllocEnemy(enemy);
 
 }
@@ -37,20 +32,7 @@ Renderer::~Renderer()
 {
 }
 
-void Renderer::PNGtoTexture(string filename, int width, int height, unsigned char * buffer)
-{
-	png::image< png::rgba_pixel > image(filename);
-	png::pixel_buffer<png::rgba_pixel> img_buf = image.get_pixbuf();
-	for (int i = 0; i < height; ++i) {
-		for (int j = 0; j < width; ++j) {
-			buffer[(height - 1 - i) * width * 4 + j * 4 + 0] = img_buf.get_pixel(j, i).red;
-			buffer[(height - 1 - i) * width * 4 + j * 4 + 1] = img_buf.get_pixel(j, i).green;
-			buffer[(height - 1 - i) * width * 4 + j * 4 + 2] = img_buf.get_pixel(j, i).blue;
-			buffer[(height - 1 - i) * width * 4 + j * 4 + 3] = img_buf.get_pixel(j, i).alpha;
-		}
-		int j = 0;
-	}
-}
+
 
 GLuint Renderer::VAllocStageWalls(Stage & stage)
 {
@@ -75,21 +57,6 @@ GLuint Renderer::VAllocStageWalls(Stage & stage)
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 
 	return vao;
-}
-
-GLuint Renderer::VAllocWallTexture(unsigned char * texture_buffer)
-{
-	GLuint textureID;
-	glGenTextures(1, &textureID);
-
-	glBindTexture(GL_TEXTURE_2D, textureID);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, wall_texture_width, wall_texture_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_buffer);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	return textureID;
 }
 
 GLuint Renderer::VAllocBG(Stage & stage)
@@ -124,7 +91,8 @@ void Renderer::RenderStageWalls(Stage & stage, Player & player, GLuint shader, G
 	GLuint MatrixID = glGetUniformLocation(shader, "MVP");
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &player.mvp[0][0]);
 
-	glBindTexture(GL_TEXTURE_2D, wall_textureID);
+	m_textures[0]->bind();
+	//glBindTexture(GL_TEXTURE_2D, wall_textureID);
 	glBindVertexArray(vao);
 	glDrawArrays(GL_QUADS, 0, stage.n_wallverts);
 }
@@ -191,21 +159,6 @@ void Renderer::UpdatePlayerUV(float uv_xy[8])
 	glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), uv_xy, GL_STATIC_DRAW);
 }
 
-GLuint Renderer::VAllocPlayerTexture(unsigned char * texture_buffer)
-{
-	GLuint textureID;
-	glGenTextures(1, &textureID);
-
-	glBindTexture(GL_TEXTURE_2D, textureID);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, player_texture_width, player_texture_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_buffer);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	//glGenerateMipmap(GL_TEXTURE_2D);
-
-	return textureID;
-}
-
 GLuint Renderer::VAllocEnemy(Enemy & enemy)
 {
 	GLuint vbo_pos = 0;
@@ -231,27 +184,13 @@ GLuint Renderer::VAllocEnemy(Enemy & enemy)
 	return vao;
 }
 
-GLuint Renderer::VAllocEnemyTexture(unsigned char * texture_buffer)
-{
-	GLuint textureID;
-	glGenTextures(1, &textureID);
-
-	glBindTexture(GL_TEXTURE_2D, textureID);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, enemy_tex_width, enemy_tex_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_buffer);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	return textureID;
-}
-
 void Renderer::RenderPlayer(Player & player, GLuint shader, GLuint vao)
 {
 	UpdatePlayerUV(player.sprite_UV_coords);
 	glUseProgram(shader);
 
-	glBindTexture(GL_TEXTURE_2D, player_textureID);
+	m_textures[1]->bind();
+	//glBindTexture(GL_TEXTURE_2D, player_textureID);
 	glBindVertexArray(vao);
 	glDrawArrays(GL_QUADS, 0, 4);
 }
@@ -264,7 +203,8 @@ void Renderer::RenderEnemy(Player & player, Enemy & enemy, GLuint shader, GLuint
 	glm::mat4 mvp = player.mvp * enemy.model_matrix;
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
 
-	glBindTexture(GL_TEXTURE_2D, enemy_texID);
+	m_textures[2]->bind();
+	//glBindTexture(GL_TEXTURE_2D, enemy_texID);
 	glBindVertexArray(vao);
 	glDrawArrays(GL_QUADS, 0, 4);
 }
