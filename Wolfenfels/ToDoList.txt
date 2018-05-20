@@ -3,6 +3,8 @@
 - Change Keystate from PollEvent and not every frame
 - Gameplay:
 	- hitpoints
+	- remove shooting through walls
+	- add distance max for a shot hit
 	- enemies
 		- attack
 - doors
