@@ -1,16 +1,8 @@
 - Keep VBO / VOA ID's, needed to free VRAM
-- use rect instead of coordinates
-- Clean up shaders
+- use rect instead of coordinates (wherever possible)
 - Change Keystate from PollEvent and not every frame
-- Create stage data format
-	- read stage from png
-- Player class
-	- collision with walls
-	- weapon anim
 - Gameplay:
 	- hitpoints
-	- weapon
-		- attack
 	- enemies
 		- attack
 - doors
