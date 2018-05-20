@@ -23,7 +23,7 @@ public:
 
 	bool Init();
 	void GameLoop();
-	void UpdateKeystates();
+	void UpdateKeystates(int key, int action);
 
 	string ReadShaderGLSL(string filename);
 	void CreateShaders();
@@ -37,4 +37,6 @@ public:
 
 	vector<GLuint> shaders;
 };
+
+extern Engine engine;
 

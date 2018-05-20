@@ -5,6 +5,11 @@
 
 using namespace std;
 
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	engine.UpdateKeystates(key, action);
+}
+
 Engine::Engine()
 {
 	if (!Init()) {
@@ -47,6 +52,8 @@ bool Engine::Init()
 		cout << "Error: Couldn't initialize GLEW." << endl;
 	}
 
+	glfwSetKeyCallback(window, key_callback);
+
 	// get version info
 	const GLubyte* renderer = glGetString(GL_RENDERER); // get renderer string
 	const GLubyte* version = glGetString(GL_VERSION); // version as a string
@@ -84,7 +91,6 @@ void Engine::GameLoop()
 		loop_start = glfwGetTime();
 
 		while (accumulator >= delta_time) {
-			UpdateKeystates();
 			player.Update(delta_time, coll, stage, keystates);
 			stage.Tick(delta_time, player);
 			accumulator -= delta_time;
@@ -113,13 +119,23 @@ void Engine::GameLoop()
 	glfwTerminate();
 }
 
-void Engine::UpdateKeystates()
+void Engine::UpdateKeystates(int key, int action)
 {
-	keystates[Buttons::UP] = glfwGetKey(window, GLFW_KEY_UP);
-	keystates[Buttons::DOWN] = glfwGetKey(window, GLFW_KEY_DOWN);
-	keystates[Buttons::LEFT] = glfwGetKey(window, GLFW_KEY_LEFT);
-	keystates[Buttons::RIGHT] = glfwGetKey(window, GLFW_KEY_RIGHT);
-	keystates[Buttons::SHOOT] = glfwGetKey(window, GLFW_KEY_SPACE);
+	if (key == GLFW_KEY_UP) {
+		keystates[Buttons::UP] = (bool)action;
+	}
+	else if (key == GLFW_KEY_DOWN) {
+		keystates[Buttons::DOWN] = (bool)action;
+	}
+	else if (key == GLFW_KEY_LEFT) {
+		keystates[Buttons::LEFT] = (bool)action;
+	}
+	else if (key == GLFW_KEY_RIGHT) {
+		keystates[Buttons::RIGHT] = (bool)action;
+	}
+	else if (key == GLFW_KEY_SPACE) {
+		keystates[Buttons::SHOOT] = (bool)action;
+	}
 }
 
 string Engine::ReadShaderGLSL(string filename)

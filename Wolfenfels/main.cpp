@@ -4,13 +4,10 @@
 
 #include "Engine.h"
 
-
-using namespace std;
+Engine engine;
 
 int main()
 {
-	Engine engine;
 	engine.GameLoop();
-	//glfwSetKeyCallback(window, key_callback);
 
 }
