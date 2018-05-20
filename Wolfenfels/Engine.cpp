@@ -70,7 +70,9 @@ bool Engine::Init()
 
 void Engine::GameLoop()
 {
+	Player player = Player();
 	Renderer renderer(stage, player, stage.enemies[0]);
+	player.weapon_anim.m_texAtlas = (TextureAtlas*)renderer.m_textures[1];
 
 	double elapsed = 0;
 	const double delta_time = 1./128;

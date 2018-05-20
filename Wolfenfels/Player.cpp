@@ -13,16 +13,11 @@ Player::Player()
 	collision_rect = Rect(pos.x-coll_width/2.0, pos.y-coll_height/2.0, coll_width, coll_height);
 	ComputeView();
 	SetSpriteCoords();
-	weapon_anim.animation = { TextureAnimation::FrameDuration{0, 0.03},
-							TextureAnimation::FrameDuration{ 1, 0.03 }, 
-							TextureAnimation::FrameDuration{ 2, 0.06 }, 
-							TextureAnimation::FrameDuration{ 3, 0.06 }, 
-							TextureAnimation::FrameDuration{ 4, 0.06 }};
-	weapon_anim.UV_rects.push_back(Rect(0.0f, 0.0f, 0.2, 1.0));
-	weapon_anim.UV_rects.push_back(Rect(0.2f, 0.0f, 0.2, 1.0));
-	weapon_anim.UV_rects.push_back(Rect(0.4f, 0.0f, 0.2, 1.0));
-	weapon_anim.UV_rects.push_back(Rect(0.605f, 0.0f, 0.2, 1.0));
-	weapon_anim.UV_rects.push_back(Rect(0.805f, 0.0f, 0.2, 1.0));
+	weapon_anim.m_animation = { TextureAnimation::TexDuration{ glm::vec2{ 0, 0}, 0.03},
+							TextureAnimation::TexDuration{ glm::vec2{ 1, 0}, 0.03 },
+							TextureAnimation::TexDuration{ glm::vec2{ 2, 0}, 0.06 },
+							TextureAnimation::TexDuration{ glm::vec2{ 3, 0}, 0.06 },
+							TextureAnimation::TexDuration{ glm::vec2{ 4, 0}, 0.06 }};
 	weapon_anim.duration = 0.24;
 }
 

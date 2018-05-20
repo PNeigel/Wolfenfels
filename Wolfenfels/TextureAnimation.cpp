@@ -27,13 +27,15 @@ array<float, 8> TextureAnimation::GetCurrentUV()
 	if (current_time >= 0) {
 		double pos_help = 0;
 		int current_frame = 0;
-		// this loop intends to find the current image depending on the current animation time
 		while (pos_help < current_time) {
-			pos_help += animation[current_frame].duration;
+			pos_help += m_animation[current_frame].duration;
 			current_frame++;
 		}
-		int current_image = animation[current_frame - 1].frame;
-		return UV_rects[current_image].AsArray();
+		glm::vec2 index = m_animation[current_frame - 1].texIndex;
+
+		return m_texAtlas->getUVcoords(index);
+
+		//return UV_rects[current_image].AsArray();
 	}
 	else {// return zero array
 		array<float, 8> zeros{ 0 };

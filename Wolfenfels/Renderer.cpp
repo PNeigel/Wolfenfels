@@ -12,7 +12,7 @@ Renderer::Renderer(Stage & stage, Player & player, Enemy & enemy)
 	bg_vao = VAllocBG(stage);
 	stage_walls_vao = VAllocStageWalls(stage);
 
-	TextureAtlas* player_texture = new TextureAtlas("Assets/pistol.png", 1, 5);
+	TextureAtlas* player_texture = new TextureAtlas("Assets/pistol.png", 5, 1);
 	m_textures.push_back(player_texture);
 	player_vao = VAllocPlayersprite(player);
 

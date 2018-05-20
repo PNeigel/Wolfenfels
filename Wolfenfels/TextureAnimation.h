@@ -5,14 +5,16 @@
 #include "glm.hpp"
 #include "Utils.h"
 
+#include "Texture\TextureAtlas.h"
+
 using namespace std;
 
 class TextureAnimation
 {
 public:
 
-	struct FrameDuration {
-		unsigned int frame;
+	struct TexDuration {
+		glm::vec2 texIndex;
 		double duration;
 	};
 
@@ -26,7 +28,8 @@ public:
 
 	double current_time = 0;
 	double duration;
-	vector<Rect> UV_rects;
-	vector<FrameDuration> animation;
+	//vector<Rect> UV_rects;
+	TextureAtlas* m_texAtlas;
+	vector<TexDuration> m_animation;
 };
 
