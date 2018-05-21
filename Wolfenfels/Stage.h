@@ -63,11 +63,9 @@ public:
 
 	vector<Wall> walls;
 	vector<Enemy> enemies;
-	float* vertcoords;
-	float* wall_UV_coords;
-	float bgverts[24];
-	float bgcolors[24];
-	int n_wallverts;
-	int n_vertcoords;
+	vector<GLfloat> vertcoords;
+	vector<GLfloat> wall_UV_coords;
+	array<GLfloat, 24> bgverts;
+	array<GLfloat, 24> bgcolors;
 };
 

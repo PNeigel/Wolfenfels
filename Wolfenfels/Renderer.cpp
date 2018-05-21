@@ -38,12 +38,12 @@ GLuint Renderer::VAllocStageWalls(Stage & stage)
 	GLuint vbo_pos = 0;
 	glGenBuffers(1, &vbo_pos); // Generate empty buffer
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_pos); // Bind as current buffer in OpenGL's state machine
-	glBufferData(GL_ARRAY_BUFFER, stage.n_vertcoords * sizeof(float), stage.vertcoords, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, stage.vertcoords.size() * sizeof(GLfloat), stage.vertcoords.data(), GL_STATIC_DRAW);
 
 	GLuint vbo_uv = 0;
 	glGenBuffers(1, &vbo_uv); // Generate empty buffer
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_uv); // Bind as current buffer in OpenGL's state machine
-	glBufferData(GL_ARRAY_BUFFER, stage.n_wallverts * 2 * sizeof(float), stage.wall_UV_coords, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, stage.wall_UV_coords.size() * sizeof(GLfloat), stage.wall_UV_coords.data(), GL_STATIC_DRAW);
 
 	GLuint vao = 0;
 	glGenVertexArrays(1, &vao);
@@ -63,12 +63,12 @@ GLuint Renderer::VAllocBG(Stage & stage)
 	GLuint vbo_pos = 0;
 	glGenBuffers(1, &vbo_pos); // Generate empty buffer
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_pos); // Bind as current buffer in OpenGL's state machine
-	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), stage.bgverts, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), stage.bgverts.data(), GL_STATIC_DRAW);
 
 	GLuint vbo_col = 0;
 	glGenBuffers(1, &vbo_col); // Generate empty buffer
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_col); // Bind as current buffer in OpenGL's state machine
-	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), stage.bgcolors, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), stage.bgcolors.data(), GL_STATIC_DRAW);
 
 	GLuint vao = 0;
 	glGenVertexArrays(1, &vao);
@@ -93,7 +93,7 @@ void Renderer::RenderStageWalls(Stage & stage, Player & player, GLuint shader, G
 	m_textures[0]->bind();
 	//glBindTexture(GL_TEXTURE_2D, wall_textureID);
 	glBindVertexArray(vao);
-	glDrawArrays(GL_QUADS, 0, stage.n_wallverts);
+	glDrawArrays(GL_QUADS, 0, stage.vertcoords.size() / 3);
 }
 
 void Renderer::RenderBG(Stage & stage, GLuint shader, GLuint vao)
