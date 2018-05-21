@@ -9,21 +9,26 @@ using namespace std;
 
 Player::Player()
 {
+	weapon_anim.m_animation = { TextureAnimation::TexDuration{ glm::vec2{ 0, 0 }, 0.03 },
+		TextureAnimation::TexDuration{ glm::vec2{ 1, 0 }, 0.03 },
+		TextureAnimation::TexDuration{ glm::vec2{ 2, 0 }, 0.06 },
+		TextureAnimation::TexDuration{ glm::vec2{ 3, 0 }, 0.06 },
+		TextureAnimation::TexDuration{ glm::vec2{ 4, 0 }, 0.06 } };
+	weapon_anim.duration = 0.24;
+	SetSpriteCoords();
+	initVBOs();
+	initVAO();
 	proj_mat = glm::perspective(glm::radians(FOV), (float)WIDTH / (float)HEIGHT, 0.01f, 1000.0f);
 	collision_rect = Rect(pos.x-coll_width/2.0, pos.y-coll_height/2.0, coll_width, coll_height);
 	ComputeView();
-	SetSpriteCoords();
-	weapon_anim.m_animation = { TextureAnimation::TexDuration{ glm::vec2{ 0, 0}, 0.03},
-							TextureAnimation::TexDuration{ glm::vec2{ 1, 0}, 0.03 },
-							TextureAnimation::TexDuration{ glm::vec2{ 2, 0}, 0.06 },
-							TextureAnimation::TexDuration{ glm::vec2{ 3, 0}, 0.06 },
-							TextureAnimation::TexDuration{ glm::vec2{ 4, 0}, 0.06 }};
-	weapon_anim.duration = 0.24;
+	
 }
 
 
 Player::~Player()
 {
+	glDeleteBuffers(1, &m_vertVBO);
+	glDeleteBuffers(1, &m_uvVBO);
 }
 
 void Player::ComputeView()
@@ -70,15 +75,9 @@ void Player::Update(double delta_time, CollisionHandler& coll, Stage& stage, int
 	ComputeView();
 	cout << "\r(" << pos.x << ", " << pos.y << ")";
 	weapon_anim.Update(delta_time);
-	if (weapon_anim.playing) {
-		array<float, 8> uv_array = weapon_anim.GetCurrentUV();
-		std::copy(uv_array.begin(), uv_array.end(), sprite_UV_coords);
-	}
-	else {
-		// If anim not playing set current UV to the standard UV
-		// will be copied every frame that is not animated, performance?
-		std::copy(begin(std_UV_coords), end(std_UV_coords), sprite_UV_coords);
-	}
+	array<GLfloat, 8> new_UV = weapon_anim.GetCurrentUV();
+	if (new_UV != sprite_UV_coords)
+		updateUV(new_UV);
 }
 
 void Player::Shoot(vector<Enemy> & enemies)
@@ -108,19 +107,49 @@ void Player::Shoot(vector<Enemy> & enemies)
 
 void Player::SetSpriteCoords()
 {
-	float lspritecoords[] = {
+	spritecoords = {
 		-0.27f, -1.0f, -1.0f,
 		0.13f, -1.0f, -1.0f,
 		0.13f, 0.1f, -1.0f,
 		-0.27f, 0.1f, -1.0f
 	};
-	std::copy(std::begin(lspritecoords), std::end(lspritecoords), spritecoords);
 
-	float lstd_UV_coords[] = {
+	//sprite_UV_coords = weapon_anim.GetCurrentUV();
+	sprite_UV_coords = {
 		0.0f, 0.0f,
-		0.2f, 0.0f,
-		0.2f, 1.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
 		0.0f, 1.0f
 	};
-	std::copy(std::begin(lstd_UV_coords), std::end(lstd_UV_coords), std_UV_coords);
+	
+}
+
+void Player::updateUV(array<GLfloat, 8> uv_coords)
+{
+	sprite_UV_coords = uv_coords;
+	glBindBuffer(GL_ARRAY_BUFFER, m_uvVBO);
+	glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(GLfloat), sprite_UV_coords.data(), GL_STATIC_DRAW);
+}
+
+void Player::initVBOs()
+{
+	glGenBuffers(1, &m_vertVBO); // Generate empty buffer
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertVBO); // Bind as current buffer in OpenGL's state machine
+	glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat), spritecoords.data(), GL_STATIC_DRAW);
+
+	glGenBuffers(1, &m_uvVBO); // Generate empty buffer
+	glBindBuffer(GL_ARRAY_BUFFER, m_uvVBO); // Bind as current buffer in OpenGL's state machine
+	glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(GLfloat), sprite_UV_coords.data(), GL_STATIC_DRAW);
+}
+
+void Player::initVAO()
+{
+	glGenVertexArrays(1, &m_VAO);
+	glBindVertexArray(m_VAO);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertVBO);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, m_uvVBO);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 }

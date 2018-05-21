@@ -14,7 +14,6 @@ Renderer::Renderer(Stage & stage, Player & player, Enemy & enemy)
 
 	TextureAtlas* player_texture = new TextureAtlas("Assets/pistol.png", 5, 1);
 	m_textures.push_back(player_texture);
-	player_vao = VAllocPlayersprite(player);
 
 	BasicTexture* enemy_texture = new BasicTexture("Assets/Cyclops.png");
 	m_textures.push_back(enemy_texture);
@@ -125,38 +124,7 @@ void Renderer::RenderAll(Stage & stage, Player & player, GLuint* shader)
 			RenderEnemy(player, enemy, shader[Shader::TEXTURE_PROJ], enemy_vao);
 		}
 	}
-	RenderPlayer(player, shader[Shader::TEXTURE_SCREEN], player_vao);
-}
-
-GLuint Renderer::VAllocPlayersprite(Player & player)
-{
-	GLuint vbo_pos = 0;
-	glGenBuffers(1, &vbo_pos); // Generate empty buffer
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_pos); // Bind as current buffer in OpenGL's state machine
-	glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), player.spritecoords, GL_STATIC_DRAW);
-
-	vbo_player_uv = 0;
-	glGenBuffers(1, &vbo_player_uv); // Generate empty buffer
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_player_uv); // Bind as current buffer in OpenGL's state machine
-	glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), player.sprite_UV_coords, GL_STATIC_DRAW);
-
-	GLuint vao = 0;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_pos);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_player_uv);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-
-	return vao;
-}
-
-void Renderer::UpdatePlayerUV(float uv_xy[8])
-{
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_player_uv);
-	glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), uv_xy, GL_STATIC_DRAW);
+	RenderPlayer(player, shader[Shader::TEXTURE_SCREEN], player.m_VAO);
 }
 
 GLuint Renderer::VAllocEnemy(Enemy & enemy)
@@ -186,7 +154,7 @@ GLuint Renderer::VAllocEnemy(Enemy & enemy)
 
 void Renderer::RenderPlayer(Player & player, GLuint shader, GLuint vao)
 {
-	UpdatePlayerUV(player.sprite_UV_coords);
+	//UpdatePlayerUV(player.sprite_UV_coords);
 	glUseProgram(shader);
 
 	m_textures[1]->bind();

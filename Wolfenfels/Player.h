@@ -7,53 +7,54 @@
 #include <glm.hpp>
 #include <ext.hpp>
 #include <gtc/matrix_transform.hpp>
+#include <array>
 
 class Enemy;
 
 class Player
 { // Acts both as the player and camera
-public:
+	public:
 
-	const float FOV = 60.0f;
-	const int WIDTH = 1366;
-	const int HEIGHT = 768;
+		const float FOV = 60.0f;
+		const int WIDTH = 1366;
+		const int HEIGHT = 768;
 
-	Player();
-	~Player();
+		Player();
+		~Player();
 
-	void ComputeView();
-	void Move(double delta_time, CollisionHandler& coll, Stage& stage, int* keystates);
+		void ComputeView();
+		void Move(double delta_time, CollisionHandler& coll, Stage& stage, int* keystates);
+		void Update(double delta_time, CollisionHandler& coll, Stage& stage, int* keystates);
+		void Shoot(vector<Enemy> & enemies);
+		void SetSpriteCoords();
+		void updateUV(array<GLfloat, 8> uv_coords);
+		void initVBOs();
+		void initVAO();
 
-	void Update(double delta_time, CollisionHandler& coll, Stage& stage, int* keystates);
+		array<GLfloat, 12> spritecoords;
+		array<GLfloat, 8> sprite_UV_coords;
 
-	void Shoot(vector<Enemy> & enemies);
+		glm::vec3 pos{ 3.0f, 3.0f, 0.5f };
+		float move_vel = 3.0f;
 
-	void SetSpriteCoords();
+		float shoot_cd = 0.0;
 
-	float spritecoords[12];
-	float sprite_UV_coords[8];
-	float std_UV_coords[8];
+		float yaw = 00.0f;
+		float yaw_vel = 100.0f;
 
-	glm::vec3 pos{ 3.0f, 3.0f, 0.5f };
-	float move_vel = 3.0f;
+		Rect collision_rect;
+		float coll_width = 0.2;
+		float coll_height = 0.2;
 
-	float shoot_cd = 0.0;
+		glm::mat4 view_mat{ 1.0f };
+		glm::vec3 view_dir{ 1.0f };
+		glm::mat4 proj_mat;
+		glm::mat4 mvp;
 
-	float yaw = 00.0f;
-	float yaw_vel = 100.0f;
+		TextureAnimation weapon_anim;
 
-	Rect collision_rect;
-	float coll_width = 0.2;
-	float coll_height = 0.2;
-
-	glm::mat4 view_mat{ 1.0f };
-	glm::vec3 view_dir{ 1.0f };
-
-	glm::mat4 proj_mat;
-
-	glm::mat4 mvp;
-
-	TextureAnimation weapon_anim;
-
+		GLuint m_vertVBO;
+		GLuint m_uvVBO;
+		GLuint m_VAO;
 };
 

@@ -21,9 +21,6 @@ public:
 	void RenderBG(Stage & stage, GLuint shader, GLuint vao);
 	void RenderAll(Stage & stage, Player & player, GLuint* shader);
 
-	GLuint VAllocPlayersprite(Player & player);
-	void UpdatePlayerUV(float uv_xy[8]); // 8 = 4 * vec2 uv coords
-
 	GLuint VAllocEnemy(Enemy & enemy);
 
 	void RenderPlayer(Player & player, GLuint shader, GLuint vao);
@@ -35,9 +32,6 @@ public:
 
 	GLuint bg_vao;
 	GLuint stage_walls_vao;
-
-	GLuint vbo_player_uv;
-	GLuint player_vao;
 
 	GLuint enemy_vao;
 
