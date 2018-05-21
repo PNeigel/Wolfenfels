@@ -14,9 +14,6 @@ public:
 	Renderer(vector<GLuint>* shader);
 	~Renderer();
 
-	GLuint VAllocStageWalls(Stage &stage);
-	GLuint VAllocBG(Stage &stage);
-
 	void RenderStageWalls(Stage & stage, Player & player, GLuint shader, GLuint vao);
 	void RenderBG(Stage & stage, GLuint shader, GLuint vao);
 	void RenderAll(Stage & stage, Player & player, GLuint* shader);
@@ -29,9 +26,6 @@ public:
 	void RenderLine(Player & player, GLuint shader, glm::vec3 start, glm::vec3 end);
 
 	vector<BasicTexture*> m_textures;
-
-	GLuint bg_vao;
-	GLuint stage_walls_vao;
 
 	GLuint enemy_vao;
 

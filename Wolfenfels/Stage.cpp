@@ -12,7 +12,10 @@ Stage::Stage(int stage_no)
 	ReadStageFromPNG("Stages/stage.png");
 	SetWallVerts();
 	SetBGVerts();
-
+	initVBOs();
+	initVAO();
+	initBgVBOs();
+	initBgVAO();
 	enemies.push_back(Enemy());
 }
 
@@ -78,6 +81,52 @@ void Stage::SetBGVerts()
 		0.18f, 0.21f,  0.24f,
 		0.18f, 0.21f,  0.24f
 	};
+}
+
+void Stage::initVBOs()
+{
+	glGenBuffers(1, &m_vertVBO); // Generate empty buffer
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertVBO); // Bind as current buffer in OpenGL's state machine
+	glBufferData(GL_ARRAY_BUFFER, vertcoords.size() * sizeof(GLfloat), vertcoords.data(), GL_STATIC_DRAW);
+
+	glGenBuffers(1, &m_uvVBO); // Generate empty buffer
+	glBindBuffer(GL_ARRAY_BUFFER, m_uvVBO); // Bind as current buffer in OpenGL's state machine
+	glBufferData(GL_ARRAY_BUFFER, wall_UV_coords.size() * sizeof(GLfloat), wall_UV_coords.data(), GL_STATIC_DRAW);
+}
+
+void Stage::initVAO()
+{
+	glGenVertexArrays(1, &m_VAO);
+	glBindVertexArray(m_VAO);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertVBO);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, m_uvVBO);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+}
+
+void Stage::initBgVBOs()
+{
+	glGenBuffers(1, &m_bgVertVBO); // Generate empty buffer
+	glBindBuffer(GL_ARRAY_BUFFER, m_bgVertVBO); // Bind as current buffer in OpenGL's state machine
+	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), bgverts.data(), GL_STATIC_DRAW);
+
+	glGenBuffers(1, &m_bgColorVBO); // Generate empty buffer
+	glBindBuffer(GL_ARRAY_BUFFER, m_bgColorVBO); // Bind as current buffer in OpenGL's state machine
+	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), bgcolors.data(), GL_STATIC_DRAW);
+}
+
+void Stage::initBgVAO()
+{
+	glGenVertexArrays(1, &m_bgVAO);
+	glBindVertexArray(m_bgVAO);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, m_bgVertVBO);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(2);
+	glBindBuffer(GL_ARRAY_BUFFER, m_bgColorVBO);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 void Stage::ReadStageFromPNG(string filename)

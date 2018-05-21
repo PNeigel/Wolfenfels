@@ -9,9 +9,6 @@ Renderer::Renderer(Stage & stage, Player & player, Enemy & enemy)
 	BasicTexture* wall_texture = new BasicTexture("Assets/wall.png");
 	m_textures.push_back(wall_texture);
 
-	bg_vao = VAllocBG(stage);
-	stage_walls_vao = VAllocStageWalls(stage);
-
 	TextureAtlas* player_texture = new TextureAtlas("Assets/pistol.png", 5, 1);
 	m_textures.push_back(player_texture);
 
@@ -31,58 +28,6 @@ Renderer::~Renderer()
 {
 }
 
-
-
-GLuint Renderer::VAllocStageWalls(Stage & stage)
-{
-	GLuint vbo_pos = 0;
-	glGenBuffers(1, &vbo_pos); // Generate empty buffer
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_pos); // Bind as current buffer in OpenGL's state machine
-	glBufferData(GL_ARRAY_BUFFER, stage.vertcoords.size() * sizeof(GLfloat), stage.vertcoords.data(), GL_STATIC_DRAW);
-
-	GLuint vbo_uv = 0;
-	glGenBuffers(1, &vbo_uv); // Generate empty buffer
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_uv); // Bind as current buffer in OpenGL's state machine
-	glBufferData(GL_ARRAY_BUFFER, stage.wall_UV_coords.size() * sizeof(GLfloat), stage.wall_UV_coords.data(), GL_STATIC_DRAW);
-
-	GLuint vao = 0;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_pos);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_uv);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-
-	return vao;
-}
-
-GLuint Renderer::VAllocBG(Stage & stage)
-{
-	GLuint vbo_pos = 0;
-	glGenBuffers(1, &vbo_pos); // Generate empty buffer
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_pos); // Bind as current buffer in OpenGL's state machine
-	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), stage.bgverts.data(), GL_STATIC_DRAW);
-
-	GLuint vbo_col = 0;
-	glGenBuffers(1, &vbo_col); // Generate empty buffer
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_col); // Bind as current buffer in OpenGL's state machine
-	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), stage.bgcolors.data(), GL_STATIC_DRAW);
-
-	GLuint vao = 0;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_pos);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(2);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_col);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-	return vao;
-}
-
 void Renderer::RenderStageWalls(Stage & stage, Player & player, GLuint shader, GLuint vao)
 {
 	glUseProgram(shader);
@@ -92,7 +37,7 @@ void Renderer::RenderStageWalls(Stage & stage, Player & player, GLuint shader, G
 
 	m_textures[0]->bind();
 	//glBindTexture(GL_TEXTURE_2D, wall_textureID);
-	glBindVertexArray(vao);
+	glBindVertexArray(stage.m_VAO);
 	glDrawArrays(GL_QUADS, 0, stage.vertcoords.size() / 3);
 }
 
@@ -100,7 +45,7 @@ void Renderer::RenderBG(Stage & stage, GLuint shader, GLuint vao)
 {
 	// Dont really need stage at the moment
 	glUseProgram(shader);
-	glBindVertexArray(vao);
+	glBindVertexArray(stage.m_bgVAO);
 	glDrawArrays(GL_QUADS, 0, 8);
 }
 

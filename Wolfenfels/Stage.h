@@ -56,6 +56,12 @@ public:
 	void SetWallVerts();
 	void SetBGVerts();
 
+	void initVBOs();
+	void initVAO();
+
+	void initBgVBOs();
+	void initBgVAO();
+
 	void ReadStageFromPNG(string filename);
 
 	void Tick(double delta_time, Player & player);
@@ -67,5 +73,13 @@ public:
 	vector<GLfloat> wall_UV_coords;
 	array<GLfloat, 24> bgverts;
 	array<GLfloat, 24> bgcolors;
+
+	GLuint m_vertVBO;
+	GLuint m_uvVBO;
+	GLuint m_VAO;
+
+	GLuint m_bgVertVBO;
+	GLuint m_bgColorVBO;
+	GLuint m_bgVAO;
 };
 
