@@ -18,6 +18,7 @@ class ResourceManager
 		static void addTexture(std::string filename);
 		static Model* addPlayerModel();
 		static Model* addWallModel();
+		static Model* addBgModel();
 		static Model* addEnemyModel();
 
 		static void load();
@@ -25,6 +26,7 @@ class ResourceManager
 		static array<GLfloat, 12> m_enemyMesh;
 		static array<GLfloat, 12> m_playerMesh;
 		static vector<GLfloat> m_wallMesh;
+		static array<GLfloat, 24> m_bgMesh;
 
 	private:
 		ResourceManager();

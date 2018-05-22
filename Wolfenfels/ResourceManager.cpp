@@ -17,6 +17,7 @@ array<GLfloat, 12> ResourceManager::m_playerMesh = {
 };
 
 vector<GLfloat> ResourceManager::m_wallMesh;
+array<GLfloat, 24> ResourceManager::m_bgMesh;
 
 
 
@@ -57,6 +58,23 @@ Model* ResourceManager::addWallModel()
 
 	model->addVBO(1, 2, placeholderUV.size(), placeholderUV.data());
 	model->m_texture = m_textures[0];
+
+	m_models.push_back(model);
+	return model;
+}
+
+Model * ResourceManager::addBgModel()
+{
+	Model* model = new Model();
+	model->genVAO();
+	model->addVBO(0, 3, m_bgMesh.size(), m_bgMesh.data());
+
+	array<GLfloat, 12> placeholderColor = {
+		0.0f, 0.0f, 1.0f, 0.0f,
+		1.0f, 1.0f, 0.0f, 1.0f
+	};
+
+	model->addVBO(2, 3, placeholderColor.size(), placeholderColor.data());
 
 	m_models.push_back(model);
 	return model;

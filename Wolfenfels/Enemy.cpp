@@ -6,7 +6,7 @@
 Enemy::Enemy(glm::vec3 pos) :
 	pos(pos)
 {
-	model = ResourceManager::m_models[1];
+	model = ResourceManager::m_models[2];
 
 	m_UV = {
 		0.0f, 0.0f,

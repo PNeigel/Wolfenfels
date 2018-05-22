@@ -65,7 +65,8 @@ public:
 
 	void Tick(double delta_time, Player & player);
 
-	Model* wallModel;
+	Model* m_wallModel;
+	Model* m_bgModel;
 
 	vector<Wall> walls;
 	vector<Enemy> enemies;

@@ -5,12 +5,7 @@
 
 
 Renderer::Renderer(Stage & stage, Player & player, Enemy & enemy)
-{
-	BasicTexture* wall_texture = new BasicTexture("Assets/wall.png");
-	m_textures.push_back(wall_texture);
-
-	//TextureAtlas* player_texture = new TextureAtlas("Assets/pistol.png", 5, 1);
-	//m_textures.push_back(player_texture);
+{	
 }
 
 Renderer::Renderer(vector<GLuint>* shader) :
@@ -29,19 +24,15 @@ void Renderer::RenderStageWalls(Stage & stage, Player & player, GLuint shader)
 	GLuint MatrixID = glGetUniformLocation(shader, "MVP");
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &player.mvp[0][0]);
 
-	//m_textures[0]->bind();
-	//glBindTexture(GL_TEXTURE_2D, wall_textureID);
-	//glBindVertexArray(stage.m_VAO);
-	stage.wallModel->m_texture->bind();
-	stage.wallModel->bindVAO();
+	stage.m_wallModel->m_texture->bind();
+	stage.m_wallModel->bindVAO();
 	glDrawArrays(GL_QUADS, 0, ResourceManager::m_wallMesh.size() / 3);
 }
 
 void Renderer::RenderBG(Stage & stage, GLuint shader, GLuint vao)
 {
-	// Dont really need stage at the moment
 	glUseProgram(shader);
-	glBindVertexArray(stage.m_bgVAO);
+	stage.m_bgModel->bindVAO();
 	glDrawArrays(GL_QUADS, 0, 8);
 }
 
@@ -73,8 +64,6 @@ void Renderer::RenderPlayer(Player & player, GLuint shader, GLuint vao)
 	glUseProgram(shader);
 
 	player.model->m_texture->bind();
-	//m_textures[1]->bind();
-	//glBindVertexArray(vao);
 	player.model->bindVAO();
 	glDrawArrays(GL_QUADS, 0, 4);
 }

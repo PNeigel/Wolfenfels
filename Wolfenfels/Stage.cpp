@@ -12,12 +12,10 @@ Stage::Stage(int stage_no)
 	ReadStageFromPNG("Stages/stage.png");
 	SetWallVerts();
 	SetBGVerts();
-	wallModel = ResourceManager::addWallModel();
-	wallModel->updateVBO(1, wall_UV_coords.size(), wall_UV_coords.data());
-	//initVBOs();
-	//initVAO();
-	initBgVBOs();
-	initBgVAO();
+	m_wallModel = ResourceManager::addWallModel();
+	m_wallModel->updateVBO(1, wall_UV_coords.size(), wall_UV_coords.data());
+	m_bgModel = ResourceManager::addBgModel();
+	m_bgModel->updateVBO(1, bgcolors.size(), bgcolors.data());
 	ResourceManager::addEnemyModel();
 	enemies.push_back(Enemy(glm::vec3{4.0, 4.0, 0.0}));
 	enemies.push_back(Enemy(glm::vec3{ 3.0, 3.0, 0.0 }));
@@ -61,7 +59,7 @@ void Stage::SetWallVerts()
 
 void Stage::SetBGVerts()
 {
-	bgverts = {
+	ResourceManager::m_bgMesh = {
 		// ceiling
 		-1.0f, 0.0f, 0.9999f,
 		1.0f, 0.0f, 0.9999f,
