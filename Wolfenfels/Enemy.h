@@ -1,15 +1,19 @@
 #pragma once
 
 #include "Player.h"
-#include "glm.hpp"
 #include "Utils.h"
+#include "ResourceManager.h"
+#include "Model.h"
+
+#include "glm.hpp"
+#include <array>
 
 class Stage;
 
 class Enemy
 {
 public:
-	Enemy();
+	Enemy(glm::vec3 pos);
 	~Enemy();
 
 	void Tick(double delta_time, Player & player, Stage & stage);
@@ -21,11 +25,12 @@ public:
 	glm::vec2 dir;
 	float yaw = 0;
 
-	glm::mat4 model_matrix;
-	float mesh[12];
+	Model* model;
 
-	float UV[8];
+	std::array<GLfloat, 8> m_UV;
 
 	float coll_width = 0.6;
+
+	glm::mat4 model_matrix;
 };
 

@@ -28,7 +28,6 @@ public:
 	string ReadShaderGLSL(string filename);
 	void CreateShaders();
 
-	Stage stage;
 	CollisionHandler coll;
 
 

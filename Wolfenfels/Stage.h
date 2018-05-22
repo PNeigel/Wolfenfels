@@ -5,6 +5,8 @@
 #include <png.hpp>
 #include "Utils.h"
 #include "Enemy.h"
+#include "ResourceManager.h"
+#include "Model.h"
 
 #include <GL/glew.h>
 
@@ -56,27 +58,20 @@ public:
 	void SetWallVerts();
 	void SetBGVerts();
 
-	void initVBOs();
-	void initVAO();
-
 	void initBgVBOs();
 	void initBgVAO();
 
 	void ReadStageFromPNG(string filename);
 
 	void Tick(double delta_time, Player & player);
-	void RemoveEnemies();
+
+	Model* wallModel;
 
 	vector<Wall> walls;
 	vector<Enemy> enemies;
-	vector<GLfloat> vertcoords;
 	vector<GLfloat> wall_UV_coords;
 	array<GLfloat, 24> bgverts;
 	array<GLfloat, 24> bgcolors;
-
-	GLuint m_vertVBO;
-	GLuint m_uvVBO;
-	GLuint m_VAO;
 
 	GLuint m_bgVertVBO;
 	GLuint m_bgColorVBO;

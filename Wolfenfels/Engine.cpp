@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include "ResourceManager.h"
 
 #include <windows.h>
 #include <sstream>
@@ -19,8 +20,6 @@ Engine::Engine()
 		cout << "Successfully initialized engine." << endl;
 	}
 	CreateShaders();
-
-	stage = Stage(1);
 }
 
 Engine::~Engine()
@@ -77,9 +76,11 @@ bool Engine::Init()
 
 void Engine::GameLoop()
 {
+	ResourceManager::load();
+	Stage stage = Stage(1);
 	Player player = Player();
 	Renderer renderer(stage, player, stage.enemies[0]);
-	player.weapon_anim.m_texAtlas = (TextureAtlas*)renderer.m_textures[1];
+	player.weapon_anim.m_texAtlas = (TextureAtlas*)ResourceManager::m_textures[1];
 
 	double elapsed = 0;
 	const double delta_time = 1./128;

@@ -12,11 +12,15 @@ Stage::Stage(int stage_no)
 	ReadStageFromPNG("Stages/stage.png");
 	SetWallVerts();
 	SetBGVerts();
-	initVBOs();
-	initVAO();
+	wallModel = ResourceManager::addWallModel();
+	wallModel->updateVBO(1, wall_UV_coords.size(), wall_UV_coords.data());
+	//initVBOs();
+	//initVAO();
 	initBgVBOs();
 	initBgVAO();
-	enemies.push_back(Enemy());
+	ResourceManager::addEnemyModel();
+	enemies.push_back(Enemy(glm::vec3{4.0, 4.0, 0.0}));
+	enemies.push_back(Enemy(glm::vec3{ 3.0, 3.0, 0.0 }));
 }
 
 
@@ -27,18 +31,18 @@ Stage::~Stage()
 void Stage::SetWallVerts()
 {	// Create the vertex positions for the VBO's
 	for (uint16_t i = 0; i < walls.size(); i++) { // Set vertices for every wall. Top is z = 1.0, bottom z = 0.0
-		vertcoords.push_back(walls[i].sides[0].x);
-		vertcoords.push_back(walls[i].sides[0].y);
-		vertcoords.push_back(0.0f);
-		vertcoords.push_back(walls[i].sides[1].x);
-		vertcoords.push_back(walls[i].sides[1].y);
-		vertcoords.push_back(0.0f);
-		vertcoords.push_back(walls[i].sides[1].x);
-		vertcoords.push_back(walls[i].sides[1].y);
-		vertcoords.push_back(1.0f);
-		vertcoords.push_back(walls[i].sides[0].x);
-		vertcoords.push_back(walls[i].sides[0].y);
-		vertcoords.push_back(1.0f);
+		ResourceManager::m_wallMesh.push_back(walls[i].sides[0].x);
+		ResourceManager::m_wallMesh.push_back(walls[i].sides[0].y);
+		ResourceManager::m_wallMesh.push_back(0.0f);
+		ResourceManager::m_wallMesh.push_back(walls[i].sides[1].x);
+		ResourceManager::m_wallMesh.push_back(walls[i].sides[1].y);
+		ResourceManager::m_wallMesh.push_back(0.0f);
+		ResourceManager::m_wallMesh.push_back(walls[i].sides[1].x);
+		ResourceManager::m_wallMesh.push_back(walls[i].sides[1].y);
+		ResourceManager::m_wallMesh.push_back(1.0f);
+		ResourceManager::m_wallMesh.push_back(walls[i].sides[0].x);
+		ResourceManager::m_wallMesh.push_back(walls[i].sides[0].y);
+		ResourceManager::m_wallMesh.push_back(1.0f);
 	}
 
 	float UV_dict[] = {
@@ -81,29 +85,6 @@ void Stage::SetBGVerts()
 		0.18f, 0.21f,  0.24f,
 		0.18f, 0.21f,  0.24f
 	};
-}
-
-void Stage::initVBOs()
-{
-	glGenBuffers(1, &m_vertVBO); // Generate empty buffer
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertVBO); // Bind as current buffer in OpenGL's state machine
-	glBufferData(GL_ARRAY_BUFFER, vertcoords.size() * sizeof(GLfloat), vertcoords.data(), GL_STATIC_DRAW);
-
-	glGenBuffers(1, &m_uvVBO); // Generate empty buffer
-	glBindBuffer(GL_ARRAY_BUFFER, m_uvVBO); // Bind as current buffer in OpenGL's state machine
-	glBufferData(GL_ARRAY_BUFFER, wall_UV_coords.size() * sizeof(GLfloat), wall_UV_coords.data(), GL_STATIC_DRAW);
-}
-
-void Stage::initVAO()
-{
-	glGenVertexArrays(1, &m_VAO);
-	glBindVertexArray(m_VAO);
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertVBO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, m_uvVBO);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 void Stage::initBgVBOs()
@@ -213,22 +194,12 @@ void Stage::ReadStageFromPNG(string filename)
 void Stage::Tick(double delta_time, Player & player)
 {
 	if (enemies.size() > 0) {
-		int en_size = enemies.size();
-		for (int i = 0; i < enemies.size(); ++i) {
+		for (int i = 0; i < enemies.size();) {
 			enemies[i].Tick(delta_time, player, *this);
-			if (enemies.size() != en_size) {
-				i--;
+			if (enemies[i].current_hp <= 0) {
+				enemies.erase(enemies.begin() + i);
 			}
-		}
-	}
-}
-
-void Stage::RemoveEnemies()
-{
-	for (int i = 0; i < enemies.size(); ++i) {
-		if (enemies[i].current_hp <= 0) {
-			enemies.erase(enemies.begin() + i);
-			break;
+			else i++;
 		}
 	}
 }

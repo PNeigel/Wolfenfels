@@ -3,6 +3,7 @@
 #include "globalenums.h"
 #include "TextureAnimation.h"
 #include "CollisionHandler.h"
+#include "Model.h"
 
 #include <glm.hpp>
 #include <ext.hpp>
@@ -34,7 +35,7 @@ class Player
 		array<GLfloat, 12> spritecoords;
 		array<GLfloat, 8> sprite_UV_coords;
 
-		glm::vec3 pos{ 3.0f, 3.0f, 0.5f };
+		glm::vec3 pos{ 1.0f, 1.0f, 0.5f };
 		float move_vel = 3.0f;
 
 		float shoot_cd = 0.0;
@@ -52,6 +53,8 @@ class Player
 		glm::mat4 mvp;
 
 		TextureAnimation weapon_anim;
+
+		Model* model;
 
 		GLuint m_vertVBO;
 		GLuint m_uvVBO;

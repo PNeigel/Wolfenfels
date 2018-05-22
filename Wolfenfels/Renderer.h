@@ -14,20 +14,16 @@ public:
 	Renderer(vector<GLuint>* shader);
 	~Renderer();
 
-	void RenderStageWalls(Stage & stage, Player & player, GLuint shader, GLuint vao);
+	void RenderStageWalls(Stage & stage, Player & player, GLuint shader);
 	void RenderBG(Stage & stage, GLuint shader, GLuint vao);
 	void RenderAll(Stage & stage, Player & player, GLuint* shader);
 
-	GLuint VAllocEnemy(Enemy & enemy);
-
 	void RenderPlayer(Player & player, GLuint shader, GLuint vao);
-	void RenderEnemy(Player & player, Enemy & enemy, GLuint shader, GLuint vao);
+	void RenderEnemy(Player & player, Enemy & enemy, GLuint shader);
 
 	void RenderLine(Player & player, GLuint shader, glm::vec3 start, glm::vec3 end);
 
 	vector<BasicTexture*> m_textures;
-
-	GLuint enemy_vao;
 
 	vector<GLuint>* shader;
 };

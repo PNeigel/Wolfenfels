@@ -3,24 +3,17 @@
 #include <iostream>
 
 
-Enemy::Enemy()
+Enemy::Enemy(glm::vec3 pos) :
+	pos(pos)
 {
-	pos = glm::vec3{ 4.0f, 4.0f, 0.0f };
-	float lmesh[] = {
-		-0.5f, 0.0f, 0.0f,
-		0.5f, 0.0f, 0.0f,
-		0.5f, 0.0f, 0.9f,
-		-0.5f, 0.0f, 0.9f
-	};
-	std::copy(std::begin(lmesh), std::end(lmesh), mesh);
+	model = ResourceManager::m_models[1];
 
-	float lUV[] = {
+	m_UV = {
 		0.0f, 0.0f,
 		1.0f, 0.0f,
 		1.0f, 1.0f,
 		0.0f, 1.0f,
 	};
-	std::copy(std::begin(lUV), std::end(lUV), UV);
 
 	max_hp = 100;
 	current_hp = max_hp;
@@ -44,8 +37,4 @@ void Enemy::Tick(double delta_time, Player & player, Stage & stage)
 	cout << "YAW: " << yaw;
 	model_matrix = glm::rotate(yaw, glm::vec3{0.0f, 0.0f, 1.0f});
 	model_matrix = glm::translate(pos) * model_matrix;
-
-	if (current_hp <= 0) {
-		stage.RemoveEnemies();
-	}
 }

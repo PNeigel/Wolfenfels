@@ -15,9 +15,10 @@ Player::Player()
 		TextureAnimation::TexDuration{ glm::vec2{ 3, 0 }, 0.06 },
 		TextureAnimation::TexDuration{ glm::vec2{ 4, 0 }, 0.06 } };
 	weapon_anim.duration = 0.24;
-	SetSpriteCoords();
-	initVBOs();
-	initVAO();
+	model = ResourceManager::addPlayerModel();
+	//SetSpriteCoords();
+	//initVBOs();
+	//initVAO();
 	proj_mat = glm::perspective(glm::radians(FOV), (float)WIDTH / (float)HEIGHT, 0.01f, 1000.0f);
 	collision_rect = Rect(pos.x-coll_width/2.0, pos.y-coll_height/2.0, coll_width, coll_height);
 	ComputeView();
