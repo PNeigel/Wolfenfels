@@ -29,13 +29,11 @@ class Player
 		void Shoot(vector<Enemy> & enemies);
 		void SetSpriteCoords();
 		void updateUV(array<GLfloat, 8> uv_coords);
-		void initVBOs();
-		void initVAO();
 
 		array<GLfloat, 12> spritecoords;
 		array<GLfloat, 8> sprite_UV_coords;
 
-		glm::vec3 pos{ 1.0f, 1.0f, 0.5f };
+		glm::vec3 pos{ 0.5f, 0.5f, 0.5f };
 		float move_vel = 3.0f;
 
 		float shoot_cd = 0.0;
@@ -55,9 +53,5 @@ class Player
 		TextureAnimation weapon_anim;
 
 		Model* model;
-
-		GLuint m_vertVBO;
-		GLuint m_uvVBO;
-		GLuint m_VAO;
 };
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Texture/BasicTexture.h"
+#include "Texture/TextureAtlas.h"
 #include "Model.h"
 
 #include <vector>
@@ -16,6 +16,7 @@ class ResourceManager
 		static vector<Model*> m_models;
 
 		static void addTexture(std::string filename);
+		static void addTextureAtlas(std::string filename, int texPerRow, int texPerCol);
 		static Model* addPlayerModel();
 		static Model* addWallModel();
 		static Model* addBgModel();

@@ -18,7 +18,7 @@ public:
 	void RenderBG(Stage & stage, GLuint shader);
 	void RenderAll(Stage & stage, Player & player, GLuint* shader);
 
-	void RenderPlayer(Player & player, GLuint shader, GLuint vao);
+	void RenderPlayer(Player & player, GLuint shader);
 	void RenderEnemy(Player & player, Enemy & enemy, GLuint shader);
 
 	void RenderLine(Player & player, GLuint shader, glm::vec3 start, glm::vec3 end);

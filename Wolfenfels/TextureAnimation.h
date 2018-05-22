@@ -28,7 +28,7 @@ public:
 
 	double current_time = 0;
 	double duration;
-	//vector<Rect> UV_rects;
+
 	TextureAtlas* m_texAtlas;
 	vector<TexDuration> m_animation;
 };

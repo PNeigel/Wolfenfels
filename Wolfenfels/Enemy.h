@@ -12,25 +12,29 @@ class Stage;
 
 class Enemy
 {
-public:
-	Enemy(glm::vec3 pos);
-	~Enemy();
+	public:
+		Enemy(glm::vec3 pos, Player & player);
+		~Enemy();
 
-	void Tick(double delta_time, Player & player, Stage & stage);
+		void Tick(double delta_time, Player & player, Stage & stage);
 
-	int max_hp;
-	int current_hp;
+		int max_hp;
+		int current_hp;
 
-	glm::vec3 pos;
-	glm::vec2 dir;
-	float yaw = 0;
+		glm::vec3 pos;
+		glm::vec2 dir;
+		float yaw = 0;
 
-	Model* model;
+		Model* model;
 
-	std::array<GLfloat, 8> m_UV;
+		std::array<GLfloat, 8> m_UV;
+		float coll_width = 0.6;
 
-	float coll_width = 0.6;
+		glm::mat4 model_matrix;
 
-	glm::mat4 model_matrix;
+		bool operator< (const Enemy & enemy) const;
+
+	private:
+		Player* player; // needed for sorting according to distance of player
 };
 

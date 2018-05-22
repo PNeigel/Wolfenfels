@@ -9,16 +9,15 @@ using namespace std;
 
 Player::Player()
 {
+	SetSpriteCoords();
+	model = ResourceManager::addPlayerModel();
 	weapon_anim.m_animation = { TextureAnimation::TexDuration{ glm::vec2{ 0, 0 }, 0.03 },
 		TextureAnimation::TexDuration{ glm::vec2{ 1, 0 }, 0.03 },
 		TextureAnimation::TexDuration{ glm::vec2{ 2, 0 }, 0.06 },
 		TextureAnimation::TexDuration{ glm::vec2{ 3, 0 }, 0.06 },
 		TextureAnimation::TexDuration{ glm::vec2{ 4, 0 }, 0.06 } };
 	weapon_anim.duration = 0.24;
-	model = ResourceManager::addPlayerModel();
-	//SetSpriteCoords();
-	//initVBOs();
-	//initVAO();
+	weapon_anim.m_texAtlas = (TextureAtlas*)model->m_texture;
 	proj_mat = glm::perspective(glm::radians(FOV), (float)WIDTH / (float)HEIGHT, 0.01f, 1000.0f);
 	collision_rect = Rect(pos.x-coll_width/2.0, pos.y-coll_height/2.0, coll_width, coll_height);
 	ComputeView();
@@ -28,8 +27,6 @@ Player::Player()
 
 Player::~Player()
 {
-	glDeleteBuffers(1, &m_vertVBO);
-	glDeleteBuffers(1, &m_uvVBO);
 }
 
 void Player::ComputeView()
@@ -108,7 +105,7 @@ void Player::Shoot(vector<Enemy> & enemies)
 
 void Player::SetSpriteCoords()
 {
-	spritecoords = {
+	ResourceManager::m_playerMesh = {
 		-0.27f, -1.0f, -1.0f,
 		0.13f, -1.0f, -1.0f,
 		0.13f, 0.1f, -1.0f,
@@ -128,29 +125,5 @@ void Player::SetSpriteCoords()
 void Player::updateUV(array<GLfloat, 8> uv_coords)
 {
 	sprite_UV_coords = uv_coords;
-	glBindBuffer(GL_ARRAY_BUFFER, m_uvVBO);
-	glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(GLfloat), sprite_UV_coords.data(), GL_STATIC_DRAW);
-}
-
-void Player::initVBOs()
-{
-	glGenBuffers(1, &m_vertVBO); // Generate empty buffer
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertVBO); // Bind as current buffer in OpenGL's state machine
-	glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat), spritecoords.data(), GL_STATIC_DRAW);
-
-	glGenBuffers(1, &m_uvVBO); // Generate empty buffer
-	glBindBuffer(GL_ARRAY_BUFFER, m_uvVBO); // Bind as current buffer in OpenGL's state machine
-	glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(GLfloat), sprite_UV_coords.data(), GL_STATIC_DRAW);
-}
-
-void Player::initVAO()
-{
-	glGenVertexArrays(1, &m_VAO);
-	glBindVertexArray(m_VAO);
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertVBO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, m_uvVBO);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+	model->updateVBO(1, uv_coords.size(), uv_coords.data());
 }

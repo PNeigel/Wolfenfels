@@ -77,10 +77,9 @@ bool Engine::Init()
 void Engine::GameLoop()
 {
 	ResourceManager::load();
-	Stage stage = Stage(1);
 	Player player = Player();
+	Stage stage = Stage(1, player);
 	Renderer renderer(stage, player, stage.enemies[0]);
-	player.weapon_anim.m_texAtlas = (TextureAtlas*)ResourceManager::m_textures[1];
 
 	double elapsed = 0;
 	const double delta_time = 1./128;

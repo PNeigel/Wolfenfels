@@ -9,12 +9,7 @@ array<GLfloat, 12> ResourceManager::m_enemyMesh = {
 	-0.5f, 0.0f, 0.9f
 };
 
-array<GLfloat, 12> ResourceManager::m_playerMesh = {
-	-0.27f, -1.0f, -1.0f,
-	0.13f, -1.0f, -1.0f,
-	0.13f, 0.1f, -1.0f,
-	-0.27f, 0.1f, -1.0f
-};
+array<GLfloat, 12> ResourceManager::m_playerMesh;
 
 vector<GLfloat> ResourceManager::m_wallMesh;
 array<GLfloat, 24> ResourceManager::m_bgMesh;
@@ -24,6 +19,12 @@ array<GLfloat, 24> ResourceManager::m_bgMesh;
 void ResourceManager::addTexture(std::string filename)
 {
 	BasicTexture* texture = new BasicTexture(filename);
+	m_textures.push_back(texture);
+}
+
+void ResourceManager::addTextureAtlas(std::string filename, int texPerRow, int texPerCol)
+{
+	TextureAtlas* texture = new TextureAtlas(filename, texPerRow, texPerCol);
 	m_textures.push_back(texture);
 }
 
@@ -101,8 +102,8 @@ Model* ResourceManager::addEnemyModel()
 void ResourceManager::load()
 {
 	addTexture("Assets/wall.png");
-	addTexture("Assets/pistol.png");
-	addTexture("Assets/Cyclops.png");
+	addTextureAtlas("Assets/pistol.png", 5, 1);
+	addTextureAtlas("Assets/Cyclops.png", 2, 1);
 }
 
 ResourceManager::ResourceManager()

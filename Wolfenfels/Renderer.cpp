@@ -41,7 +41,7 @@ void Renderer::RenderAll(Stage & stage, Player & player, GLuint* shader)
 	RenderBG(stage, shader[Shader::COLOR_SCREEN]);
 	RenderStageWalls(stage, player, shader[Shader::TEXTURE_PROJ]);
 	if (player.weapon_anim.playing) {
-		RenderLine(player, shader[Shader::COLOR_PROJ], glm::vec3{ player.pos.x, player.pos.y, 0.3 } + player.view_dir * 0.1, player.pos + player.view_dir * 10.0f);
+		//RenderLine(player, shader[Shader::COLOR_PROJ], glm::vec3{ player.pos.x, player.pos.y, 0.3 } + player.view_dir * 0.1, player.pos + player.view_dir * 10.0f);
 		/*
 		glm::vec2 perp{ enemy.dir.y * -1.0f, enemy.dir.x };
 		glm::vec2 right = glm::vec2(enemy.pos) + perp * enemy.coll_width / 2.0;
@@ -52,14 +52,14 @@ void Renderer::RenderAll(Stage & stage, Player & player, GLuint* shader)
 		*/
 	}
 	if (stage.enemies.size() > 0) {
-		for (Enemy & enemy : stage.enemies) {
-			RenderEnemy(player, enemy, shader[Shader::TEXTURE_PROJ]);
+		for (auto enemy_pointer = stage.enemies.rbegin(); enemy_pointer != stage.enemies.rend(); enemy_pointer++) {
+			RenderEnemy(player, *enemy_pointer, shader[Shader::TEXTURE_PROJ]);
 		}
 	}
-	RenderPlayer(player, shader[Shader::TEXTURE_SCREEN], player.m_VAO);
+	RenderPlayer(player, shader[Shader::TEXTURE_SCREEN]);
 }
 
-void Renderer::RenderPlayer(Player & player, GLuint shader, GLuint vao)
+void Renderer::RenderPlayer(Player & player, GLuint shader)
 {
 	glUseProgram(shader);
 
@@ -77,6 +77,7 @@ void Renderer::RenderEnemy(Player & player, Enemy & enemy, GLuint shader)
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
 
 	enemy.model->m_texture->bind();
+	enemy.model->updateVBO(1, enemy.m_UV.size(), enemy.m_UV.data());
 	enemy.model->bindVAO();
 	glDrawArrays(GL_QUADS, 0, 4);
 }

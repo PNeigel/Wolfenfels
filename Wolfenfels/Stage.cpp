@@ -4,7 +4,7 @@
 #include <sstream>
 
 
-Stage::Stage(int stage_no)
+Stage::Stage(int stage_no, Player & player)
 {
 	stringstream ssfilename;
 	ssfilename << "Stages/stage" << std::to_string(stage_no) << ".txt";
@@ -17,8 +17,9 @@ Stage::Stage(int stage_no)
 	m_bgModel = ResourceManager::addBgModel();
 	m_bgModel->updateVBO(1, bgcolors.size(), bgcolors.data());
 	ResourceManager::addEnemyModel();
-	enemies.push_back(Enemy(glm::vec3{4.0, 4.0, 0.0}));
-	enemies.push_back(Enemy(glm::vec3{ 3.0, 3.0, 0.0 }));
+	for (int i = 0; i < 2; i++) {
+		enemies.push_back(Enemy(glm::vec3{ 2*i+3, 2*i+3, 0.0 }, player));
+	}
 }
 
 
@@ -168,6 +169,7 @@ void Stage::ReadStageFromPNG(string filename)
 
 void Stage::Tick(double delta_time, Player & player)
 {
+	std::sort(enemies.begin(), enemies.end());
 	if (enemies.size() > 0) {
 		for (int i = 0; i < enemies.size();) {
 			enemies[i].Tick(delta_time, player, *this);

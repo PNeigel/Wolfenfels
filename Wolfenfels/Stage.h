@@ -51,7 +51,7 @@ struct Wall {
 class Stage
 {
 public:
-	Stage(int stage_no);
+	Stage(int stage_no, Player& player);
 	Stage() {}
 	~Stage();
 
