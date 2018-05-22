@@ -85,29 +85,6 @@ void Stage::SetBGVerts()
 	};
 }
 
-void Stage::initBgVBOs()
-{
-	glGenBuffers(1, &m_bgVertVBO); // Generate empty buffer
-	glBindBuffer(GL_ARRAY_BUFFER, m_bgVertVBO); // Bind as current buffer in OpenGL's state machine
-	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), bgverts.data(), GL_STATIC_DRAW);
-
-	glGenBuffers(1, &m_bgColorVBO); // Generate empty buffer
-	glBindBuffer(GL_ARRAY_BUFFER, m_bgColorVBO); // Bind as current buffer in OpenGL's state machine
-	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), bgcolors.data(), GL_STATIC_DRAW);
-}
-
-void Stage::initBgVAO()
-{
-	glGenVertexArrays(1, &m_bgVAO);
-	glBindVertexArray(m_bgVAO);
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_bgVertVBO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(2);
-	glBindBuffer(GL_ARRAY_BUFFER, m_bgColorVBO);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-}
-
 void Stage::ReadStageFromPNG(string filename)
 {
 	png::image< png::rgba_pixel > image(filename);

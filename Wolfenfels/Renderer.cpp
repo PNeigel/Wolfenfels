@@ -29,7 +29,7 @@ void Renderer::RenderStageWalls(Stage & stage, Player & player, GLuint shader)
 	glDrawArrays(GL_QUADS, 0, ResourceManager::m_wallMesh.size() / 3);
 }
 
-void Renderer::RenderBG(Stage & stage, GLuint shader, GLuint vao)
+void Renderer::RenderBG(Stage & stage, GLuint shader)
 {
 	glUseProgram(shader);
 	stage.m_bgModel->bindVAO();
@@ -38,7 +38,7 @@ void Renderer::RenderBG(Stage & stage, GLuint shader, GLuint vao)
 
 void Renderer::RenderAll(Stage & stage, Player & player, GLuint* shader)
 {
-	RenderBG(stage, shader[Shader::COLOR_SCREEN], stage.m_bgVAO);
+	RenderBG(stage, shader[Shader::COLOR_SCREEN]);
 	RenderStageWalls(stage, player, shader[Shader::TEXTURE_PROJ]);
 	if (player.weapon_anim.playing) {
 		RenderLine(player, shader[Shader::COLOR_PROJ], glm::vec3{ player.pos.x, player.pos.y, 0.3 } + player.view_dir * 0.1, player.pos + player.view_dir * 10.0f);

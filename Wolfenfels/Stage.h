@@ -58,9 +58,6 @@ public:
 	void SetWallVerts();
 	void SetBGVerts();
 
-	void initBgVBOs();
-	void initBgVAO();
-
 	void ReadStageFromPNG(string filename);
 
 	void Tick(double delta_time, Player & player);
@@ -70,12 +67,8 @@ public:
 
 	vector<Wall> walls;
 	vector<Enemy> enemies;
-	vector<GLfloat> wall_UV_coords;
-	array<GLfloat, 24> bgverts;
-	array<GLfloat, 24> bgcolors;
 
-	GLuint m_bgVertVBO;
-	GLuint m_bgColorVBO;
-	GLuint m_bgVAO;
+	vector<GLfloat> wall_UV_coords;
+	array<GLfloat, 24> bgcolors;
 };
 

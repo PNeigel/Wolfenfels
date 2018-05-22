@@ -15,7 +15,7 @@ public:
 	~Renderer();
 
 	void RenderStageWalls(Stage & stage, Player & player, GLuint shader);
-	void RenderBG(Stage & stage, GLuint shader, GLuint vao);
+	void RenderBG(Stage & stage, GLuint shader);
 	void RenderAll(Stage & stage, Player & player, GLuint* shader);
 
 	void RenderPlayer(Player & player, GLuint shader, GLuint vao);
