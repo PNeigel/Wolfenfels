@@ -71,3 +71,34 @@ bool CollisionHandler::CheckOverlap(Rect& rectA, Rect& rectB)
 	}
 	return false;
 }
+
+bool CollisionHandler::rayLineIntersection(glm::vec2 start, glm::vec2 dir, float maxLength, glm::vec2 lineStart, glm::vec2 lineDir, float lineLength)
+{
+	float t; // t: length parameter for the casted ray
+	float s; // s: length parameter along the tested line
+	return rayLineIntersection(start, dir, maxLength, lineStart, lineDir, lineLength, t, s);
+}
+
+bool CollisionHandler::rayLineIntersection(glm::vec2 start, glm::vec2 dir, float maxLength, glm::vec2 lineStart, glm::vec2 lineDir, float lineLength, float& t, float&s)
+{
+	// t: length parameter for the casted ray
+	// s: length parameter along the tested line
+
+	float epsilon = 0.001;
+	assert(glm::isNormalized(dir, epsilon));
+	assert(glm::isNormalized(lineDir, epsilon));
+
+	float tmp = dir.y / dir.x;
+	s = (lineStart.y - start.y) - tmp * ( lineStart.x - start.x);
+	s /= (tmp * lineDir.x - lineDir.y);
+
+	t = lineStart.x - start.x + s * lineDir.x;
+	t /= dir.x;
+
+	bool result = true;
+	if (t > maxLength || t < 0 || s < 0 || s > lineLength) {
+		result = false;
+		t = maxLength;
+	}
+	return result;
+}

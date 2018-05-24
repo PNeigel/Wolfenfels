@@ -151,6 +151,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Renderer2D.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="TextureAnimation.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Renderer2D.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="TextureAnimation.h" />
@@ -175,6 +177,7 @@
   <ItemGroup>
     <None Include="Shader\color.frag" />
     <None Include="Shader\projection.vert" />
+    <None Include="Shader\rend2d.vert" />
     <None Include="Shader\straight.vert" />
     <None Include="Shader\texture.frag" />
   </ItemGroup>

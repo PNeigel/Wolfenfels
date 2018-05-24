@@ -60,6 +60,9 @@
     <ClCompile Include="ResourceManager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer2D.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Stage.h">
@@ -101,6 +104,9 @@
     <ClInclude Include="ResourceManager.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Renderer2D.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\projection.vert">
@@ -113,6 +119,9 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="Shader\texture.frag">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\rend2d.vert">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

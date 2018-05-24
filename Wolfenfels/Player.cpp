@@ -67,7 +67,7 @@ void Player::Update(double delta_time, CollisionHandler& coll, Stage& stage, int
 	Move(delta_time, coll, stage, keystates);
 	collision_rect = Rect(pos.x - coll_width / 2.0, pos.y - coll_height / 2.0, coll_width, coll_height);
 	if (keystates[Buttons::SHOOT] && shoot_cd <= 0.0) {
-		Shoot(stage.enemies);
+		Shoot(stage, coll);
 		shoot_cd = 0.5;
 	}
 	ComputeView();
@@ -78,26 +78,37 @@ void Player::Update(double delta_time, CollisionHandler& coll, Stage& stage, int
 		updateUV(new_UV);
 }
 
-void Player::Shoot(vector<Enemy> & enemies)
+void Player::Shoot(Stage & stage, CollisionHandler& coll)
 {
 	weapon_anim.playing = true;
 
-	// check collision with enemies
-	// check if view_direction of player is between vectors to left and right side of enemy collision rect
+	float maxShootRange = 3;
+	// check collision with walls
+	for (Wall & wall : stage.walls) {
+		glm::vec2 lineDir = wall.sides[1] - wall.sides[0];
+		glm::vec2 lineStart = wall.sides[0];
+		float wallLength = 1.0;
+		float t, s;
+		bool hit = coll.rayLineIntersection(glm::vec2(pos), glm::vec2(view_dir), maxShootRange, lineStart, lineDir, wallLength, t, s);
+		m_lastRaycast[0] = pos;
+		m_lastRaycast[1] = pos + t * view_dir;
+		if (hit) // hit a wall, don't check for enemies
+			return;
+	}
 
-	for (Enemy &enemy : enemies) {
-		glm::vec2 perp{ enemy.dir.y * -1.0f, enemy.dir.x };
-		glm::vec2 right = glm::vec2(enemy.pos) + perp * enemy.coll_width/2.0 - glm::vec2(pos);
-		right = glm::normalize(right);
-		glm::vec2 left = glm::vec2(enemy.pos) - perp * enemy.coll_width/2.0 - glm::vec2(pos);
-		left = glm::normalize(left);
-		float alpha = glm::angle(right, left);
-		float toLeft = glm::angle(left, glm::vec2(view_dir));
-		float toRight = glm::angle(right, glm::vec2(view_dir));
-		if (toLeft < alpha && toRight < alpha) {
+	// check collision with enemies
+	for (Enemy &enemy : stage.enemies) {
+		glm::vec2 perp{ -1.0f * enemy.dir.y, enemy.dir.x };
+		glm::vec2 lineStart = glm::vec2(enemy.pos) - perp * enemy.coll_width / 2.0f;
+		float t, s;
+		bool hit = coll.rayLineIntersection(glm::vec2(pos), glm::vec2(view_dir), maxShootRange, lineStart, perp, enemy.coll_width, t, s);
+		m_lastRaycast[0] = pos;
+		m_lastRaycast[1] = pos + t * view_dir;
+		if (hit) {
 			int damage = 10;
 			enemy.current_hp -= damage;
 			cout << "Hit! New HP: " << enemy.current_hp << endl;
+			break;
 		}
 	}
 

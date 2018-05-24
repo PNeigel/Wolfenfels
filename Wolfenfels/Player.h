@@ -26,7 +26,7 @@ class Player
 		void ComputeView();
 		void Move(double delta_time, CollisionHandler& coll, Stage& stage, int* keystates);
 		void Update(double delta_time, CollisionHandler& coll, Stage& stage, int* keystates);
-		void Shoot(vector<Enemy> & enemies);
+		void Shoot(Stage & stage, CollisionHandler& coll);
 		void SetSpriteCoords();
 		void updateUV(array<GLfloat, 8> uv_coords);
 
@@ -53,5 +53,7 @@ class Player
 		TextureAnimation weapon_anim;
 
 		Model* model;
+
+		glm::vec3 m_lastRaycast[2];
 };
 

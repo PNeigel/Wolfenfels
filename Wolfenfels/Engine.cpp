@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include "ResourceManager.h"
+#include "Renderer2D.h"
 
 #include <windows.h>
 #include <sstream>
@@ -79,7 +80,11 @@ void Engine::GameLoop()
 	ResourceManager::load();
 	Player player = Player();
 	Stage stage = Stage(1, player);
+
+	bool render2d = 0;
+
 	Renderer renderer(stage, player, stage.enemies[0]);
+	Renderer2D renderer2D(&shaders[4]);
 
 	double elapsed = 0;
 	const double delta_time = 1./128;
@@ -99,7 +104,10 @@ void Engine::GameLoop()
 
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		renderer.RenderAll(stage, player, (GLuint*)&shaders[0]);
+		if (!render2d)
+			renderer.RenderAll(stage, player, (GLuint*)&shaders[0]);
+		else
+			renderer2D.RenderAll(stage, player, coll);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		framecount++;
@@ -160,14 +168,14 @@ void Engine::CreateShaders()
 	string straightv_str = ReadShaderGLSL("Shader/straight.vert");
 	const char* straight_vshader = straightv_str.c_str();
 
+	string rend2dv_str = ReadShaderGLSL("Shader/rend2d.vert");
+	const char* rend2d_vshader = rend2dv_str.c_str();
+
 	string colorf_str = ReadShaderGLSL("Shader/color.frag");
 	const char* color_fshader = colorf_str.c_str();
 
 	string texturef_str = ReadShaderGLSL("Shader/texture.frag");
 	const char* texture_fshader = texturef_str.c_str();
-
-	string texanimf_str = ReadShaderGLSL("Shader/texture_anim.frag");
-	const char* texanim_fshader = texanimf_str.c_str();
 
 	GLuint p_vs = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(p_vs, 1, &projection_vshader, NULL);
@@ -176,6 +184,10 @@ void Engine::CreateShaders()
 	GLuint s_vs = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(s_vs, 1, &straight_vshader, NULL);
 	glCompileShader(s_vs);
+
+	GLuint rend2d_vs = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(rend2d_vs, 1, &rend2d_vshader, NULL);
+	glCompileShader(rend2d_vs);
 
 	GLuint c_fs = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(c_fs, 1, &color_fshader, NULL);
@@ -208,4 +220,10 @@ void Engine::CreateShaders()
 	glAttachShader(cproj_shader, p_vs);
 	glLinkProgram(cproj_shader);
 	shaders.push_back(cproj_shader);
+
+	GLuint rend2d_shader = glCreateProgram();
+	glAttachShader(rend2d_shader, c_fs);
+	glAttachShader(rend2d_shader, rend2d_vs);
+	glLinkProgram(rend2d_shader);
+	shaders.push_back(rend2d_shader);
 }

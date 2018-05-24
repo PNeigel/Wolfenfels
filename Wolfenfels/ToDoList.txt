@@ -1,6 +1,4 @@
 - IMPORTANT: remove hardcoded enemy.model reference
-- use rect instead of coordinates (wherever possible)
-- Change Keystate from PollEvent and not every frame
 - Gameplay:
 	- hitpoints
 	- remove shooting through walls
