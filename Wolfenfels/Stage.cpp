@@ -20,6 +20,7 @@ Stage::Stage(int stage_no, Player & player)
 	for (int i = 0; i < 2; i++) {
 		enemies.push_back(Enemy(glm::vec3{ 2*i+3, 2*i+3, 0.0 }, player));
 	}
+	enemies.push_back(Enemy(glm::vec3{ 4.5 , 6.5, 0.0 }, player));
 }
 
 

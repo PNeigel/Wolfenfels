@@ -83,18 +83,9 @@ void Player::Shoot(Stage & stage, CollisionHandler& coll)
 	weapon_anim.playing = true;
 
 	float maxShootRange = 3;
-	// check collision with walls
-	for (Wall & wall : stage.walls) {
-		glm::vec2 lineDir = wall.sides[1] - wall.sides[0];
-		glm::vec2 lineStart = wall.sides[0];
-		float wallLength = 1.0;
-		float t, s;
-		bool hit = coll.rayLineIntersection(glm::vec2(pos), glm::vec2(view_dir), maxShootRange, lineStart, lineDir, wallLength, t, s);
-		m_lastRaycast[0] = pos;
-		m_lastRaycast[1] = pos + t * view_dir;
-		if (hit) // hit a wall, don't check for enemies
-			return;
-	}
+	float newMaxRange;
+
+	Enemy* potentialHit = nullptr;
 
 	// check collision with enemies
 	for (Enemy &enemy : stage.enemies) {
@@ -104,14 +95,32 @@ void Player::Shoot(Stage & stage, CollisionHandler& coll)
 		bool hit = coll.rayLineIntersection(glm::vec2(pos), glm::vec2(view_dir), maxShootRange, lineStart, perp, enemy.coll_width, t, s);
 		m_lastRaycast[0] = pos;
 		m_lastRaycast[1] = pos + t * view_dir;
-		if (hit) {
-			int damage = 10;
-			enemy.current_hp -= damage;
-			cout << "Hit! New HP: " << enemy.current_hp << endl;
+		if (hit) { // we flag the closest hit enemy as potential hit
+			newMaxRange = t;
+			potentialHit = &enemy;
 			break;
 		}
 	}
 
+	if (potentialHit == nullptr)
+		return; // no enemy
+
+	// check collision with walls
+	// if we hit a wall closer than the potential enemy hit, its not a hit
+	for (Wall & wall : stage.walls) {
+		glm::vec2 lineDir = wall.sides[1] - wall.sides[0];
+		glm::vec2 lineStart = wall.sides[0];
+		float wallLength = 1.0;
+		float t, s;
+		bool hit = coll.rayLineIntersection(glm::vec2(pos), glm::vec2(view_dir), newMaxRange, lineStart, lineDir, wallLength, t, s);
+		m_lastRaycast[0] = pos;
+		m_lastRaycast[1] = pos + t * view_dir;
+		if (hit) // hit a wall instead of enemy
+			return;
+	}
+	int damage = 10;
+	potentialHit->current_hp -= damage;
+	cout << "Hit! New HP: " << potentialHit->current_hp << endl;
 }
 
 void Player::SetSpriteCoords()
