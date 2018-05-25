@@ -3,6 +3,30 @@
 #include <fstream>
 #include <sstream>
 
+bool CloseDistance(const Wall& wall, glm::vec2 objectPos, float threshold)
+{
+
+	return (glm::length(wall.sides[0] - objectPos) <= threshold);
+}
+
+
+bool WallDistCompare(const Wall& wallA, const Wall& wallB, glm::vec2 target)
+{
+	// this wall
+	glm::vec2 diffA = glm::vec2(target) - wallA.sides[0];
+	float distA = glm::abs(glm::dot(diffA, wallA.m_normal));
+	// other wall
+	glm::vec2 diffB = glm::vec2(target) - wallB.sides[0];
+	float distB = glm::abs(glm::dot(diffB, wallB.m_normal));
+
+	if (glm::abs(distA - distB) < 0.001) {
+		distA = glm::min(glm::length(diffA), glm::length(glm::vec2(target) - wallA.sides[1]));
+		distB = glm::min(glm::length(diffB), glm::length(glm::vec2(target) - wallB.sides[1]));
+	}
+
+	return (distA < distB);
+}
+
 
 Stage::Stage(int stage_no, Player & player)
 {
@@ -10,6 +34,9 @@ Stage::Stage(int stage_no, Player & player)
 	ssfilename << "Stages/stage" << std::to_string(stage_no) << ".txt";
 	string filename = ssfilename.str();
 	ReadStageFromPNG("Stages/stage.png");
+	std::sort(walls.begin(), walls.end(),
+		[&](const Wall& wallA, const Wall& wallB) {return WallDistCompare(wallA, wallB, glm::vec2(player.pos));}
+	);
 	SetWallVerts();
 	SetBGVerts();
 	m_wallModel = ResourceManager::addWallModel();
@@ -22,7 +49,6 @@ Stage::Stage(int stage_no, Player & player)
 	}
 	enemies.push_back(Enemy(glm::vec3{ 4.5 , 6.5, 0.0 }, player));
 }
-
 
 Stage::~Stage()
 {
@@ -91,7 +117,6 @@ void Stage::ReadStageFromPNG(string filename)
 {
 	png::image< png::rgba_pixel > image(filename);
 	png::pixel_buffer<png::rgba_pixel> img_buf = image.get_pixbuf();
-	Wall wall;
 	int width = image.get_width();
 	int height = image.get_height();
 	unsigned char r, g, b, a;
@@ -110,12 +135,12 @@ void Stage::ReadStageFromPNG(string filename)
 					b = img_buf.get_pixel(j, i-1).blue;
 					a = img_buf.get_pixel(j, i-1).alpha;
 					if (r == 0 && g == 0 && b == 0) {
-						wall = Wall(glm::vec2{ j, height-i }, glm::vec2{ j + 1, height - i });
+						Wall wall = Wall(glm::vec2{ j, height-i }, glm::vec2{ j + 1, height - i });
 						walls.push_back(wall);
 					}
 				}
 				else {
-					wall = Wall(glm::vec2{ j, height - i }, glm::vec2{ j + 1, height - i });
+					Wall wall = Wall(glm::vec2{ j, height - i }, glm::vec2{ j + 1, height - i });
 					walls.push_back(wall);
 				}
 				// check right
@@ -125,12 +150,12 @@ void Stage::ReadStageFromPNG(string filename)
 					b = img_buf.get_pixel(j+1, i).blue;
 					a = img_buf.get_pixel(j+1, i).alpha;
 					if (r == 0 && g == 0 && b == 0) {
-						wall = Wall(glm::vec2{ j + 1, height - i }, glm::vec2{ j + 1, height - (i + 1) });
+						Wall wall = Wall(glm::vec2{ j + 1, height - i }, glm::vec2{ j + 1, height - (i + 1) });
 						walls.push_back(wall);
 					}
 				}
 				else {
-					wall = Wall(glm::vec2{ j + 1, height - i }, glm::vec2{ j + 1, height - (i + 1) });
+					Wall wall = Wall(glm::vec2{ j + 1, height - i }, glm::vec2{ j + 1, height - (i + 1) });
 					walls.push_back(wall);
 				}
 				// check bottom
@@ -140,12 +165,12 @@ void Stage::ReadStageFromPNG(string filename)
 					b = img_buf.get_pixel(j, i + 1).blue;
 					a = img_buf.get_pixel(j, i + 1).alpha;
 					if (r == 0 && g == 0 && b == 0) {
-						wall = Wall(glm::vec2{ j + 1, height - (i + 1) }, glm::vec2{ j, height - (i + 1) });
+						Wall wall = Wall(glm::vec2{ j + 1, height - (i + 1) }, glm::vec2{ j, height - (i + 1) });
 						walls.push_back(wall);
 					}
 				}
 				else {
-					wall = Wall(glm::vec2{ j + 1, height - (i + 1) }, glm::vec2{ j, height - (i + 1) });
+					Wall wall = Wall(glm::vec2{ j + 1, height - (i + 1) }, glm::vec2{ j, height - (i + 1) });
 					walls.push_back(wall);
 				}
 				// check left
@@ -155,12 +180,12 @@ void Stage::ReadStageFromPNG(string filename)
 					b = img_buf.get_pixel(j - 1, i).blue;
 					a = img_buf.get_pixel(j - 1, i).alpha;
 					if (r == 0 && g == 0 && b == 0) {
-						wall = Wall(glm::vec2{ j, height - (i + 1) }, glm::vec2{ j, height - i });
+						Wall wall = Wall(glm::vec2{ j, height - (i + 1) }, glm::vec2{ j, height - i });
 						walls.push_back(wall);
 					}
 				}
 				else {
-					wall = Wall(glm::vec2{j, height - (i + 1) }, glm::vec2{ j, height - i });
+					Wall wall = Wall(glm::vec2{j, height - (i + 1) }, glm::vec2{ j, height - i });
 					walls.push_back(wall);
 				}
 			}
@@ -170,6 +195,12 @@ void Stage::ReadStageFromPNG(string filename)
 
 void Stage::Tick(double delta_time, Player & player)
 {
+	auto firstNotClose = std::partition(walls.begin(), walls.end(),
+		[&](Wall& wall) {return CloseDistance(wall, glm::vec2(player.pos), m_closeDistance);}
+	);
+	std::sort(walls.begin(), firstNotClose,
+		[&](const Wall& wallA, const Wall& wallB) {return WallDistCompare(wallA, wallB, glm::vec2(player.pos));}
+	);
 	std::sort(enemies.begin(), enemies.end());
 	if (enemies.size() > 0) {
 		for (int i = 0; i < enemies.size();) {

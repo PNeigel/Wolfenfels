@@ -81,7 +81,7 @@ void Engine::GameLoop()
 	Player player = Player();
 	Stage stage = Stage(1, player);
 
-	bool render2d = 0;
+	bool render2d = 1;
 
 	Renderer renderer(stage, player, stage.enemies[0]);
 	Renderer2D renderer2D(&shaders[4]);
@@ -95,6 +95,10 @@ void Engine::GameLoop()
 	while (!glfwWindowShouldClose(window)) {
 		loop_start = glfwGetTime();
 
+		if (keystates[Buttons::MINIMAP]) {
+			render2d = !render2d;
+			keystates[Buttons::MINIMAP] = 0;
+		}
 		while (accumulator >= delta_time) {
 			player.Update(delta_time, coll, stage, keystates);
 			stage.Tick(delta_time, player);
@@ -104,10 +108,9 @@ void Engine::GameLoop()
 
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		if (!render2d)
-			renderer.RenderAll(stage, player, (GLuint*)&shaders[0]);
-		else
-			renderer2D.RenderAll(stage, player, coll);
+		renderer.RenderAll(stage, player, (GLuint*)&shaders[0]);
+		if (render2d)
+			renderer2D.RenderAll(stage, player, coll);		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		framecount++;
@@ -129,6 +132,9 @@ void Engine::GameLoop()
 
 void Engine::UpdateKeystates(int key, int action)
 {
+
+
+
 	if (key == GLFW_KEY_UP) {
 		keystates[Buttons::UP] = (bool)action;
 	}
@@ -143,6 +149,9 @@ void Engine::UpdateKeystates(int key, int action)
 	}
 	else if (key == GLFW_KEY_SPACE) {
 		keystates[Buttons::SHOOT] = (bool)action;
+	}
+	else if (key == GLFW_KEY_M) {
+		keystates[Buttons::MINIMAP] = (bool)action;
 	}
 }
 

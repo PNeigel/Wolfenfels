@@ -9,19 +9,18 @@ using namespace std;
 
 Player::Player()
 {
+	readSettings("settings.ini");
 	SetSpriteCoords();
 	model = ResourceManager::addPlayerModel();
-	weapon_anim.m_animation = { TextureAnimation::TexDuration{ glm::vec2{ 0, 0 }, 0.03 },
-		TextureAnimation::TexDuration{ glm::vec2{ 1, 0 }, 0.03 },
+	weapon_anim.m_animation = { TextureAnimation::TexDuration{ glm::vec2{ 1, 0 }, 0.03 },
 		TextureAnimation::TexDuration{ glm::vec2{ 2, 0 }, 0.06 },
 		TextureAnimation::TexDuration{ glm::vec2{ 3, 0 }, 0.06 },
 		TextureAnimation::TexDuration{ glm::vec2{ 4, 0 }, 0.06 } };
-	weapon_anim.duration = 0.24;
+	weapon_anim.calcDuration();
 	weapon_anim.m_texAtlas = (TextureAtlas*)model->m_texture;
 	proj_mat = glm::perspective(glm::radians(FOV), (float)WIDTH / (float)HEIGHT, 0.01f, 1000.0f);
 	collision_rect = Rect(pos.x-coll_width/2.0, pos.y-coll_height/2.0, coll_width, coll_height);
 	ComputeView();
-	
 }
 
 
@@ -66,12 +65,12 @@ void Player::Update(double delta_time, CollisionHandler& coll, Stage& stage, int
 	if (shoot_cd > 0) shoot_cd -= delta_time;
 	Move(delta_time, coll, stage, keystates);
 	collision_rect = Rect(pos.x - coll_width / 2.0, pos.y - coll_height / 2.0, coll_width, coll_height);
-	if (keystates[Buttons::SHOOT] && shoot_cd <= 0.0) {
+	if (keystates[Buttons::SHOOT] == 1 && shoot_cd <= 0.0) {
 		Shoot(stage, coll);
-		shoot_cd = 0.5;
+		shoot_cd = 0.2;
 	}
 	ComputeView();
-	cout << "\r(" << pos.x << ", " << pos.y << ")";
+	//cout << "\r(" << pos.x << ", " << pos.y << ")";
 	weapon_anim.Update(delta_time);
 	array<GLfloat, 8> new_UV = weapon_anim.GetCurrentUV();
 	if (new_UV != sprite_UV_coords)
@@ -81,6 +80,7 @@ void Player::Update(double delta_time, CollisionHandler& coll, Stage& stage, int
 void Player::Shoot(Stage & stage, CollisionHandler& coll)
 {
 	weapon_anim.playing = true;
+	weapon_anim.current_time = 0.0f;
 
 	float maxShootRange = 3;
 	float newMaxRange;
@@ -146,4 +146,18 @@ void Player::updateUV(array<GLfloat, 8> uv_coords)
 {
 	sprite_UV_coords = uv_coords;
 	model->updateVBO(1, uv_coords.size(), uv_coords.data());
+}
+
+void Player::readSettings(string filename)
+{
+	string tag;
+	ifstream settingsStr(filename);
+	settingsStr >> tag;
+	if (tag == "FOV") settingsStr >> FOV;
+	settingsStr >> tag;
+	if (tag == "WIDTH") settingsStr >> WIDTH;
+	settingsStr >> tag;
+	if (tag == "HEIGHT") settingsStr >> HEIGHT;
+
+	settingsStr.close();
 }

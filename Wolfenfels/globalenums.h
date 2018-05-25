@@ -3,7 +3,7 @@
 namespace Buttons {
 	enum Buttons
 	{
-		UP, DOWN, LEFT, RIGHT, SHOOT, STRAFE, WEAPON2, ACTION
+		UP, DOWN, LEFT, RIGHT, SHOOT, STRAFE, WEAPON2, ACTION, MINIMAP
 	};
 }
 

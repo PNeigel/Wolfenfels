@@ -22,6 +22,7 @@ public:
 	~TextureAnimation();
 
 	void Update(double delta_time);
+	void calcDuration();
 	bool playing = false;
 	bool repeat = false;
 	array<float, 8> GetCurrentUV();

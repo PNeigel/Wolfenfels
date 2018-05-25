@@ -22,6 +22,14 @@ void TextureAnimation::Update(double delta_time)
 	else current_time = 0;
 }
 
+void TextureAnimation::calcDuration()
+{
+	duration = 0;
+	for (TexDuration & texdur : m_animation) {
+		duration += texdur.duration;
+	}
+}
+
 array<float, 8> TextureAnimation::GetCurrentUV()
 {
 	if (current_time > 0) {

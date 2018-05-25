@@ -17,5 +17,6 @@ void main() {
   outp.color = color_in;
   vec3 centered = pos - cam_pos;
   vec3 aspect = vec3(1/aspectRatio, 1.0, 1.0);
-  gl_Position = vec4(scale * aspect * centered, 1.0);
+  vec3 minimap = clamp(0.75 + 0.25 * scale * aspect * centered, 0.5, 1.0);
+  gl_Position = vec4(minimap, 1.0);
 }

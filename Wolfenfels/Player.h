@@ -16,9 +16,9 @@ class Player
 { // Acts both as the player and camera
 	public:
 
-		const float FOV = 60.0f;
-		const int WIDTH = 1366;
-		const int HEIGHT = 768;
+		float FOV;// = 178.0f;
+		int WIDTH;// = 1366;
+		int HEIGHT;// = 768;
 
 		Player();
 		~Player();
@@ -29,6 +29,7 @@ class Player
 		void Shoot(Stage & stage, CollisionHandler& coll);
 		void SetSpriteCoords();
 		void updateUV(array<GLfloat, 8> uv_coords);
+		void readSettings(string filename);
 
 		array<GLfloat, 12> spritecoords;
 		array<GLfloat, 8> sprite_UV_coords;

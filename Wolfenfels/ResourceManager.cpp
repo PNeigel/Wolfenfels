@@ -101,7 +101,7 @@ Model* ResourceManager::addEnemyModel()
 
 void ResourceManager::load()
 {
-	addTexture("Assets/wall.png");
+	addTexture("Assets/wallblue.png");
 	addTextureAtlas("Assets/pistol.png", 5, 1);
 	addTextureAtlas("Assets/Cyclops.png", 2, 1);
 }

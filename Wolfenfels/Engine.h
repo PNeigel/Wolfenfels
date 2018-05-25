@@ -32,7 +32,7 @@ public:
 
 
 	GLFWwindow* window;
-	int keystates[8];
+	int keystates[9];
 
 	vector<GLuint> shaders;
 };
