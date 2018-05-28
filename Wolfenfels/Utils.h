@@ -1,5 +1,8 @@
 #pragma once
+
 #include <array>
+#include <vector>
+#include <GL/glew.h>
 #include "glm.hpp"
 
 using namespace std;
@@ -27,3 +30,19 @@ struct Rect {
 	glm::vec2 base;
 	float height, width;
 };
+
+inline vector<GLfloat> BufferFromIndex(GLfloat* dict, int dictSize, int dimensions, int* index, int indexSize)
+{
+	assert(dictSize % dimensions == 0);
+
+	vector<GLfloat> result;
+
+	for (int i = 0; i < indexSize; i++) {
+		if (index[i] > dictSize / dimensions) throw;
+		for (int j = 0; j < dimensions; j++) {
+			result.push_back(dict[index[i]*dimensions+j]);
+		}
+	}
+
+	return result;
+}

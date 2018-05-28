@@ -56,6 +56,7 @@ void Renderer::RenderAll(Stage & stage, Player & player, GLuint* shader)
 			RenderEnemy(player, *enemy_pointer, shader[Shader::TEXTURE_PROJ]);
 		}
 	}
+	renderDoor(player, stage.m_door, shader[Shader::TEXTURE_PROJ]);
 	RenderPlayer(player, shader[Shader::TEXTURE_SCREEN]);
 }
 
@@ -80,6 +81,19 @@ void Renderer::RenderEnemy(Player & player, Enemy & enemy, GLuint shader)
 	enemy.model->updateVBO(1, enemy.m_UV.size(), enemy.m_UV.data());
 	enemy.model->bindVAO();
 	glDrawArrays(GL_QUADS, 0, 4);
+}
+
+void Renderer::renderDoor(Player & player, Door & door, GLuint shader)
+{
+	glUseProgram(shader);
+
+	GLuint MatrixID = glGetUniformLocation(shader, "MVP");
+	glm::mat4 mvp = player.mvp * door.m_modelMatrix;
+	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
+
+	door.m_model->m_texture->bind();
+	door.m_model->bindVAO();
+	glDrawArrays(GL_QUADS, 0, ResourceManager::m_doorMesh.size() / 3);
 }
 
 void Renderer::RenderLine(Player & player, GLuint shader, glm::vec3 start, glm::vec3 end)

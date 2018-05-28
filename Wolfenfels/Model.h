@@ -12,7 +12,6 @@ class Model
 		Model();
 		~Model();
 
-
 		void addVBO(int location, int data_dim, int data_size, GLfloat* data);
 		void updateVBO(int i_vbo, int data_size, GLfloat* data);
 		void genVAO();

@@ -4,6 +4,7 @@
 #include "Stage.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Door.h"
 #include "Utils.h"
 #include "Texture\TextureAtlas.h"
 
@@ -20,6 +21,7 @@ public:
 
 	void RenderPlayer(Player & player, GLuint shader);
 	void RenderEnemy(Player & player, Enemy & enemy, GLuint shader);
+	void renderDoor(Player & player, Door & door, GLuint shader);
 
 	void RenderLine(Player & player, GLuint shader, glm::vec3 start, glm::vec3 end);
 
