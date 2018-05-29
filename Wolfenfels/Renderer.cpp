@@ -40,23 +40,13 @@ void Renderer::RenderAll(Stage & stage, Player & player, GLuint* shader)
 {
 	RenderBG(stage, shader[Shader::COLOR_SCREEN]);
 	RenderStageWalls(stage, player, shader[Shader::TEXTURE_PROJ]);
-	if (player.weapon_anim.playing) {
-		//RenderLine(player, shader[Shader::COLOR_PROJ], glm::vec3{ player.pos.x, player.pos.y, 0.3 } + player.view_dir * 0.1, player.pos + player.view_dir * 10.0f);
-		/*
-		glm::vec2 perp{ enemy.dir.y * -1.0f, enemy.dir.x };
-		glm::vec2 right = glm::vec2(enemy.pos) + perp * enemy.coll_width / 2.0;
-		glm::vec2 left = glm::vec2(enemy.pos) - perp * enemy.coll_width / 2.0;
-		RenderLine(player, shader[Shader::COLOR_PROJ], glm::vec3{ player.pos.x, player.pos.y, 0.3 }, glm::vec3(right, 0.5));
-		RenderLine(player, shader[Shader::COLOR_PROJ], glm::vec3{ player.pos.x, player.pos.y, 0.3 }, glm::vec3(left, 0.5));
-		RenderLine(player, shader[Shader::COLOR_PROJ], glm::vec3{ player.pos.x, player.pos.y, 0.3 }, enemy.pos);
-		*/
-	}
+	for (Door & door : stage.m_doors)
+		renderDoor(player, door, shader[Shader::TEXTURE_PROJ]);
 	if (stage.enemies.size() > 0) {
 		for (auto enemy_pointer = stage.enemies.rbegin(); enemy_pointer != stage.enemies.rend(); enemy_pointer++) {
 			RenderEnemy(player, *enemy_pointer, shader[Shader::TEXTURE_PROJ]);
 		}
 	}
-	renderDoor(player, stage.m_door, shader[Shader::TEXTURE_PROJ]);
 	RenderPlayer(player, shader[Shader::TEXTURE_SCREEN]);
 }
 

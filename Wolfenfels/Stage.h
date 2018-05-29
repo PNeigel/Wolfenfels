@@ -40,7 +40,7 @@ public:
 
 	vector<Wall> walls;
 	vector<Enemy> enemies;
-	Door m_door = Door(glm::vec3{0.5f, 2.5f, 0.0f});
+	vector<Door> m_doors;
 
 	vector<GLfloat> wall_UV_coords;
 	array<GLfloat, 24> bgcolors;
