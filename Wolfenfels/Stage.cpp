@@ -167,26 +167,16 @@ void Stage::ReadStageFromPNG(string filename)
 
 			if ( (int)current.red == 100 && (int)current.green == 100 && (int)current.blue == 255) { // pixel is marked as door
 				// check 4 neighboring pixels
-				// check top
-				if ( (int)top.red == 0 && (int)top.green == 0 && (int)top.blue == 0) {
+				// check top and bottom
+				if (   ((int)top.red == 0 && (int)top.green == 0 && (int)top.blue == 0) // top black?
+					|| ((int)bottom.red == 0 && (int)bottom.green == 0 && (int)bottom.blue == 0)   ) { // or bottom black?
 					Door door(glm::vec3{ j + 0.5, height - 1 -i + 0.5, 0.0f }, true);
 					m_doors.push_back(door);
 					continue;
 				}
-				// check right
-				if ((int)right.red == 0 && (int)right.green == 0 && (int)right.blue == 0) {
-					Door door(glm::vec3{ j + 0.5, height - 1 - i + 0.5, 0.0f }, false);
-					m_doors.push_back(door);
-					continue;
-				}
-				// check bottom
-				if ((int)bottom.red == 0 && (int)bottom.green == 0 && (int)bottom.blue == 0) {
-					Door door(glm::vec3{ j + 0.5, height - 1 - i + 0.5, 0.0f }, true);
-					m_doors.push_back(door);
-					continue;
-				}
-				// check left
-				if ((int)left.red == 0 && (int)left.green == 0 && (int)left.blue == 0) {
+				// check right and left
+				if (   ((int)right.red == 0 && (int)right.green == 0 && (int)right.blue == 0) // right black?
+					|| ((int)left.red == 0 && (int)left.green == 0 && (int)left.blue == 0) ) { // or left black?
 					Door door(glm::vec3{ j + 0.5, height - 1 - i + 0.5, 0.0f }, false);
 					m_doors.push_back(door);
 					continue;
