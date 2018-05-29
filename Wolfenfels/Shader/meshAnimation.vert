@@ -15,10 +15,9 @@ out VertexData{
 void main() {
   outp.UV = UV_in;
   outp.color = color_in;
-  if (affected) {
-	gl_Position = MVP * animTransform * vec4(pos, 1.0);
+  gl_Position = vec4(pos, 1.0);
+  if (affected > 0.0) {
+	gl_Position = animTransform * gl_Position;
   }
-  else {
-	gl_Position = MVP * vec4(pos, 1.0);
-  }
+  gl_Position = MVP * gl_Position;
 }

@@ -185,8 +185,8 @@
     <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="meshAnimation.vert" />
     <None Include="Shader\color.frag" />
+    <None Include="Shader\meshAnimation.vert" />
     <None Include="Shader\projection.vert" />
     <None Include="Shader\rend2d.vert" />
     <None Include="Shader\straight.vert" />

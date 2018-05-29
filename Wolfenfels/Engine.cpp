@@ -84,7 +84,7 @@ void Engine::GameLoop()
 	bool render2d = 1;
 
 	Renderer renderer(stage, stage.enemies[0]);
-	Renderer2D renderer2D(&shaders[4]);
+	Renderer2D renderer2D(&shaders[Shader::REND2D]);
 
 	double elapsed = 0;
 	const double delta_time = 1./128;
@@ -152,6 +152,9 @@ void Engine::UpdateKeystates(int key, int action)
 	else if (key == GLFW_KEY_M) {
 		keystates[Buttons::MINIMAP] = (bool)action;
 	}
+	else if (key == GLFW_KEY_E) {
+		keystates[Buttons::ACTION] = (bool)action;
+	}
 }
 
 string Engine::ReadShaderGLSL(string filename)
@@ -179,6 +182,9 @@ void Engine::CreateShaders()
 	string rend2dv_str = ReadShaderGLSL("Shader/rend2d.vert");
 	const char* rend2d_vshader = rend2dv_str.c_str();
 
+	string meshAnimv_str = ReadShaderGLSL("Shader/meshAnimation.vert");
+	const char* meshAnim_vshader = meshAnimv_str.c_str();
+
 	string colorf_str = ReadShaderGLSL("Shader/color.frag");
 	const char* color_fshader = colorf_str.c_str();
 
@@ -196,6 +202,14 @@ void Engine::CreateShaders()
 	GLuint rend2d_vs = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(rend2d_vs, 1, &rend2d_vshader, NULL);
 	glCompileShader(rend2d_vs);
+
+	GLuint meshAnim_vs = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(meshAnim_vs, 1, &meshAnim_vshader, NULL);
+	glCompileShader(meshAnim_vs);
+
+	GLint success = 0;
+	glGetShaderiv(meshAnim_vs, GL_COMPILE_STATUS, &success);
+	cout << "MeshAnim Shader success: " << success << endl;
 
 	GLuint c_fs = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(c_fs, 1, &color_fshader, NULL);
@@ -234,4 +248,33 @@ void Engine::CreateShaders()
 	glAttachShader(rend2d_shader, rend2d_vs);
 	glLinkProgram(rend2d_shader);
 	shaders.push_back(rend2d_shader);
+
+	GLuint meshAnim_shader = glCreateProgram();
+	glAttachShader(meshAnim_shader, t_fs);
+	glAttachShader(meshAnim_shader, meshAnim_vs);
+	glLinkProgram(meshAnim_shader);
+	shaders.push_back(meshAnim_shader);
+
+	GLint successs = 0;
+	glGetProgramiv(meshAnim_shader, GL_LINK_STATUS, &successs);
+	cout << "MeshAnim Linking success: " << successs << endl;
+
+	if (successs == GL_FALSE)
+	{
+		GLint maxLength = 0;
+		glGetProgramiv(meshAnim_shader, GL_INFO_LOG_LENGTH, &maxLength);
+
+		// The maxLength includes the NULL character
+		std::vector<GLchar> infoLog(maxLength);
+		glGetProgramInfoLog(meshAnim_shader, maxLength, &maxLength, &infoLog[0]);
+
+		// The program is useless now. So delete it.
+		glDeleteProgram(meshAnim_shader);
+
+		// Provide the infolog in whatever manner you deem best.
+
+		for (GLchar c : infoLog) cout << c;
+		// Exit with failure.
+		return;
+	}
 }

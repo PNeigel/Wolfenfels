@@ -136,7 +136,7 @@
     <None Include="Shader\rend2d.vert">
       <Filter>Shader</Filter>
     </None>
-    <None Include="meshAnimation.vert">
+    <None Include="Shader\meshAnimation.vert">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

@@ -160,7 +160,8 @@ Model * ResourceManager::addDoorModel()
 		16, 17, 18, 19,
 		17, 20, 23, 18,
 		20, 21, 22, 23,
-		21, 16, 19, 22
+		21, 16, 19, 22,
+		19, 18, 23, 22,
 	};
 	m_doorMesh = BufferFromIndex(m_doorMeshDict.data(), m_doorMeshDict.size(), 3, indices.data(), indices.size());
 
@@ -179,12 +180,14 @@ Model * ResourceManager::addDoorModel()
 	model->addVBO(1, 2, m_doorUV.size(), m_doorUV.data());
 	model->m_texture = m_textures[3];
 
-	for (int i = 0; i < indices.size(); i++) {
-		if (i < indices.size() / 3)
+	for (int i = 0; i < indices.size()-4; i++) {
+		if (i < (indices.size()-4) * 2.0/ 3)
 			m_doorAnimAffected.push_back(0);
 		else
 			m_doorAnimAffected.push_back(1);
 	}
+	for (int i = 0; i <  4; i++)
+		m_doorAnimAffected.push_back(1);
 
 	model->addVBO(3, 1, m_doorAnimAffected.size(), m_doorAnimAffected.data());
 

@@ -224,6 +224,9 @@ void Stage::Tick(double delta_time, CollisionHandler & coll, int* keystates)
 	std::sort(walls.begin(), firstNotClose,
 		[&](const Wall& wallA, const Wall& wallB) {return WallDistCompare(wallA, wallB, glm::vec2(player.pos));}
 	);
+	std::sort(m_doors.begin(), m_doors.end(),
+		[&](const Door& doorA, const Door& doorB) {return CloserToThan(doorA.m_pos, doorB.m_pos, player.pos);}
+	);
 	std::sort(enemies.begin(), enemies.end(),
 		[&](const Enemy& enemyA, const Enemy& enemyB) {return CloserToThan(enemyA.pos, enemyB.pos, player.pos);}
 	);
@@ -236,4 +239,6 @@ void Stage::Tick(double delta_time, CollisionHandler & coll, int* keystates)
 			else i++;
 		}
 	}
+	for (Door& door : m_doors)
+		door.tick(delta_time);
 }

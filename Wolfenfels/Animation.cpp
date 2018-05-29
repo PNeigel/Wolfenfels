@@ -65,7 +65,7 @@ T Animation<T>::getCurrentKeyframe()
 {
 	int lastIdx = m_keyframes.size() - 2;
 	int nextIdx = m_keyframes.size() - 1;
-	float intoNext;
+	float intoNext = 1.0;
 	
 	if (!m_reverse) {
 		for (int i = 0; i < m_keyframes.size() - 1; i++) {
@@ -92,9 +92,10 @@ T Animation<T>::getCurrentKeyframe()
 		return m_keyframes[lastIdx];
 	}
 	else {
-		return m_keyframes[lastIdx] * intoNext + m_keyframes[nextIdx] * (1 - intoNext);
+		return m_keyframes[lastIdx] * (1 - intoNext) + m_keyframes[nextIdx] * intoNext;
 	}
 
 }
 
 template class Animation<glm::vec2>;
+template class Animation<glm::mat4>;

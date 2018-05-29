@@ -41,7 +41,7 @@ void Renderer::RenderAll(Stage & stage, GLuint* shader)
 	RenderBG(stage, shader[Shader::COLOR_SCREEN]);
 	RenderStageWalls(stage, shader[Shader::TEXTURE_PROJ]);
 	for (Door & door : stage.m_doors)
-		renderDoor(stage.player, door, shader[Shader::TEXTURE_PROJ]);
+		renderDoor(stage.player, door, shader[Shader::MESHANIM]);
 	if (stage.enemies.size() > 0) {
 		for (auto enemy_pointer = stage.enemies.rbegin(); enemy_pointer != stage.enemies.rend(); enemy_pointer++) {
 			RenderEnemy(stage.player, *enemy_pointer, shader[Shader::TEXTURE_PROJ]);
@@ -80,6 +80,9 @@ void Renderer::renderDoor(Player & player, Door & door, GLuint shader)
 	GLuint MatrixID = glGetUniformLocation(shader, "MVP");
 	glm::mat4 mvp = player.mvp * door.m_modelMatrix;
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
+
+	GLuint animTransformID = glGetUniformLocation(shader, "animTransform");
+	glUniformMatrix4fv(animTransformID, 1, GL_FALSE, &door.m_animMatrix[0][0]);
 
 	door.m_model->m_texture->bind();
 	door.m_model->bindVAO();
