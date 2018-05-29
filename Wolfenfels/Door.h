@@ -9,7 +9,7 @@ public:
 	Door(glm::vec3 pos, bool xAligned);
 	~Door();
 
-	Model* m_model;
+	static Model* m_model;
 
 	glm::vec3 m_pos;
 	bool m_xAligned = false;

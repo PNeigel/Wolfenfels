@@ -9,20 +9,28 @@ using namespace std;
 
 Player::Player()
 {
+}
+
+Player::Player(glm::vec3 pos) :
+	pos(pos)
+{
 	readSettings("settings.ini");
 	SetSpriteCoords();
 	model = ResourceManager::addPlayerModel();
-	weapon_anim.m_animation = { TextureAnimation::TexDuration{ glm::vec2{ 1, 0 }, 0.03 },
-		TextureAnimation::TexDuration{ glm::vec2{ 2, 0 }, 0.06 },
-		TextureAnimation::TexDuration{ glm::vec2{ 3, 0 }, 0.06 },
-		TextureAnimation::TexDuration{ glm::vec2{ 4, 0 }, 0.06 } };
-	weapon_anim.calcDuration();
-	weapon_anim.m_texAtlas = (TextureAtlas*)model->m_texture;
+	
+	m_weaponAnim.addKeyframe(glm::vec2{ 0,0 }, 0.0f);
+	m_weaponAnim.addKeyframe(glm::vec2{ 1,0 }, 0.00001f);
+	m_weaponAnim.addKeyframe(glm::vec2{ 2,0 }, 0.03f);
+	m_weaponAnim.addKeyframe(glm::vec2{ 3,0 }, 0.09f);
+	m_weaponAnim.addKeyframe(glm::vec2{ 4,0 }, 0.15f);
+	m_weaponAnim.addKeyframe(glm::vec2{ 0,0 }, 0.21f);
+
+	m_textureAtlas = (TextureAtlas*)model->m_texture;
+
 	proj_mat = glm::perspective(glm::radians(FOV), (float)WIDTH / (float)HEIGHT, 0.01f, 1000.0f);
 	collision_rect = Rect(pos.x-coll_width/2.0, pos.y-coll_height/2.0, coll_width, coll_height);
 	ComputeView();
 }
-
 
 Player::~Player()
 {
@@ -71,16 +79,20 @@ void Player::Update(double delta_time, CollisionHandler& coll, Stage& stage, int
 	}
 	ComputeView();
 	//cout << "\r(" << pos.x << ", " << pos.y << ")";
-	weapon_anim.Update(delta_time);
-	array<GLfloat, 8> new_UV = weapon_anim.GetCurrentUV();
+	m_weaponAnim.tick(delta_time);
+	array<GLfloat, 8> new_UV;
+	if (m_weaponAnim.m_playing)
+		new_UV = m_textureAtlas->getUVcoords(m_weaponAnim.getCurrentKeyframe());
+	else
+		new_UV = m_textureAtlas->getUVcoords(m_weaponAnim.m_keyframes[0]);
 	if (new_UV != sprite_UV_coords)
 		updateUV(new_UV);
 }
 
 void Player::Shoot(Stage & stage, CollisionHandler& coll)
 {
-	weapon_anim.playing = true;
-	weapon_anim.current_time = 0.0f;
+	m_weaponAnim.setTimeToStart();
+	m_weaponAnim.m_playing = true;
 
 	float maxShootRange = 3;
 	float newMaxRange;

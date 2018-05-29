@@ -1,5 +1,6 @@
 #include "ResourceManager.h"
 #include "Utils.h"
+#include <iostream>
 
 vector<BasicTexture*> ResourceManager::m_textures;
 vector<Model*> ResourceManager::m_models;
@@ -38,6 +39,7 @@ array<GLfloat, 24*3> ResourceManager::m_doorMeshDict = {
 
 vector<GLfloat> ResourceManager::m_doorMesh;
 vector<GLfloat> ResourceManager::m_doorUV;
+vector<GLfloat> ResourceManager::m_doorAnimAffected;
 
 vector<GLfloat> ResourceManager::m_doorUVDict = {
 	0.0f, 0.0f,
@@ -137,6 +139,11 @@ Model* ResourceManager::addEnemyModel()
 
 Model * ResourceManager::addDoorModel()
 {
+ 	static Model* doorModel;
+
+	if (doorModel != nullptr)
+		return doorModel;
+
 	Model* model = new Model();
 	model->genVAO();
 
@@ -161,7 +168,7 @@ Model * ResourceManager::addDoorModel()
 
 	vector<int> indicesUV;
 
-	for (int i = 0; i < indices.size() / 4; i++) {
+	for (size_t i = 0; i < indices.size() / 4; i++) {
 		indicesUV.push_back(0);
 		indicesUV.push_back(1);
 		indicesUV.push_back(2);
@@ -172,11 +179,18 @@ Model * ResourceManager::addDoorModel()
 	model->addVBO(1, 2, m_doorUV.size(), m_doorUV.data());
 	model->m_texture = m_textures[3];
 
-	array<GLfloat, 24> animAffected;
+	for (int i = 0; i < indices.size(); i++) {
+		if (i < indices.size() / 3)
+			m_doorAnimAffected.push_back(0);
+		else
+			m_doorAnimAffected.push_back(1);
+	}
 
-	model->addVBO(3, 1, animAffected.size(), animAffected.data());
+	model->addVBO(3, 1, m_doorAnimAffected.size(), m_doorAnimAffected.data());
 
 	m_models.push_back(model);
+
+	doorModel = model;
 	return model;
 }
 

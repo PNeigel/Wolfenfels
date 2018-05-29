@@ -11,7 +11,7 @@ Renderer2D::~Renderer2D()
 {
 }
 
-void Renderer2D::RenderStageWalls(Stage & stage, Player& player)
+void Renderer2D::RenderStageWalls(Stage & stage)
 {
 	GLuint VAO;
 	glGenVertexArrays(1, &VAO);
@@ -49,9 +49,9 @@ void Renderer2D::RenderStageWalls(Stage & stage, Player& player)
 	GLuint scaleID = glGetUniformLocation(*m_screenShader, "scale");
 	glUniform1f(scaleID, m_scale);
 	GLuint aspectID = glGetUniformLocation(*m_screenShader, "aspectRatio");
-	glUniform1f(aspectID, player.WIDTH / (float)player.HEIGHT);
+	glUniform1f(aspectID, stage.player.WIDTH / (float)stage.player.HEIGHT);
 	GLuint camPosID = glGetUniformLocation(*m_screenShader, "cam_pos");
-	glUniform3fv(camPosID, 1, &player.pos[0]);
+	glUniform3fv(camPosID, 1, &stage.player.pos[0]);
 
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
@@ -63,14 +63,15 @@ void Renderer2D::RenderStageWalls(Stage & stage, Player& player)
 	glDeleteVertexArrays(1, &VAO);
 }
 
-void Renderer2D::RenderAll(Stage & stage, Player & player, CollisionHandler& coll)
+void Renderer2D::RenderAll(Stage & stage, CollisionHandler& coll)
 {
-	RenderStageWalls(stage, player);
-	RenderPlayer(player);
-	if (player.weapon_anim.playing)
-		RenderRaycast(stage, player, coll);
+	RenderStageWalls(stage);
+	RenderPlayer(stage.player);
+	//if (stage.player.weapon_anim.playing)
+	if (stage.player.m_weaponAnim.m_playing)
+		RenderRaycast(stage, coll);
 	for (Enemy& enemy : stage.enemies) {
-		RenderEnemy(player, enemy);
+		RenderEnemy(stage.player, enemy);
 	}
 }
 
@@ -185,14 +186,14 @@ void Renderer2D::RenderEnemy(Player & player, Enemy & enemy)
 	glDeleteVertexArrays(1, &VAO);
 }
 
-void Renderer2D::RenderRaycast(Stage & stage, Player & player, CollisionHandler& coll)
+void Renderer2D::RenderRaycast(Stage & stage, CollisionHandler& coll)
 {
 	GLuint VAO;
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
-	glm::vec2 A(player.m_lastRaycast[0]);
-	glm::vec2 B(player.m_lastRaycast[1]);
+	glm::vec2 A(stage.player.m_lastRaycast[0]);
+	glm::vec2 B(stage.player.m_lastRaycast[1]);
 	vector<GLfloat> vertex = { A.x, A.y, 0.0f, B.x, B.y, 0.0f };
 	vector<GLfloat> colors;
 	for (int i = 0; i < 3 * vertex.size(); i++) {
@@ -217,9 +218,9 @@ void Renderer2D::RenderRaycast(Stage & stage, Player & player, CollisionHandler&
 	GLuint scaleID = glGetUniformLocation(*m_screenShader, "scale");
 	glUniform1f(scaleID, m_scale);
 	GLuint aspectID = glGetUniformLocation(*m_screenShader, "aspectRatio");
-	glUniform1f(aspectID, player.WIDTH / (float)player.HEIGHT);
+	glUniform1f(aspectID, stage.player.WIDTH / (float)stage.player.HEIGHT);
 	GLuint camPosID = glGetUniformLocation(*m_screenShader, "cam_pos");
-	glUniform3fv(camPosID, 1, &player.pos[0]);
+	glUniform3fv(camPosID, 1, &stage.player.pos[0]);
 
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);

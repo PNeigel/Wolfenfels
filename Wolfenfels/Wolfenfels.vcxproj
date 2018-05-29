@@ -150,6 +150,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="CollisionHandler.cpp" />
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -161,12 +162,12 @@
     <ClCompile Include="Renderer2D.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Stage.cpp" />
-    <ClCompile Include="TextureAnimation.cpp" />
     <ClCompile Include="Texture\BasicTexture.cpp" />
     <ClCompile Include="Texture\TextureAtlas.cpp" />
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="CollisionHandler.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="Enemy.h" />
@@ -178,13 +179,13 @@
     <ClInclude Include="Renderer2D.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Stage.h" />
-    <ClInclude Include="TextureAnimation.h" />
     <ClInclude Include="Texture\BasicTexture.h" />
     <ClInclude Include="Texture\TextureAtlas.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="meshAnimation.vert" />
     <None Include="Shader\color.frag" />
     <None Include="Shader\projection.vert" />
     <None Include="Shader\rend2d.vert" />

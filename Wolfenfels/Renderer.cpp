@@ -4,7 +4,7 @@
 #include <png.hpp>
 
 
-Renderer::Renderer(Stage & stage, Player & player, Enemy & enemy)
+Renderer::Renderer(Stage & stage, Enemy & enemy)
 {	
 }
 
@@ -17,12 +17,12 @@ Renderer::~Renderer()
 {
 }
 
-void Renderer::RenderStageWalls(Stage & stage, Player & player, GLuint shader)
+void Renderer::RenderStageWalls(Stage & stage, GLuint shader)
 {
 	glUseProgram(shader);
 
 	GLuint MatrixID = glGetUniformLocation(shader, "MVP");
-	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &player.mvp[0][0]);
+	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &stage.player.mvp[0][0]);
 
 	stage.m_wallModel->m_texture->bind();
 	stage.m_wallModel->bindVAO();
@@ -36,18 +36,18 @@ void Renderer::RenderBG(Stage & stage, GLuint shader)
 	glDrawArrays(GL_QUADS, 0, 8);
 }
 
-void Renderer::RenderAll(Stage & stage, Player & player, GLuint* shader)
+void Renderer::RenderAll(Stage & stage, GLuint* shader)
 {
 	RenderBG(stage, shader[Shader::COLOR_SCREEN]);
-	RenderStageWalls(stage, player, shader[Shader::TEXTURE_PROJ]);
+	RenderStageWalls(stage, shader[Shader::TEXTURE_PROJ]);
 	for (Door & door : stage.m_doors)
-		renderDoor(player, door, shader[Shader::TEXTURE_PROJ]);
+		renderDoor(stage.player, door, shader[Shader::TEXTURE_PROJ]);
 	if (stage.enemies.size() > 0) {
 		for (auto enemy_pointer = stage.enemies.rbegin(); enemy_pointer != stage.enemies.rend(); enemy_pointer++) {
-			RenderEnemy(player, *enemy_pointer, shader[Shader::TEXTURE_PROJ]);
+			RenderEnemy(stage.player, *enemy_pointer, shader[Shader::TEXTURE_PROJ]);
 		}
 	}
-	RenderPlayer(player, shader[Shader::TEXTURE_SCREEN]);
+	RenderPlayer(stage.player, shader[Shader::TEXTURE_SCREEN]);
 }
 
 void Renderer::RenderPlayer(Player & player, GLuint shader)

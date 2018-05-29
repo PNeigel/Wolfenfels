@@ -77,13 +77,13 @@ bool Engine::Init()
 
 void Engine::GameLoop()
 {
+	CollisionHandler coll;
 	ResourceManager::load();
-	Player player = Player();
-	Stage stage = Stage(1, player);
+	Stage stage = Stage(1);
 
 	bool render2d = 1;
 
-	Renderer renderer(stage, player, stage.enemies[0]);
+	Renderer renderer(stage, stage.enemies[0]);
 	Renderer2D renderer2D(&shaders[4]);
 
 	double elapsed = 0;
@@ -100,17 +100,16 @@ void Engine::GameLoop()
 			keystates[Buttons::MINIMAP] = 0;
 		}
 		while (accumulator >= delta_time) {
-			player.Update(delta_time, coll, stage, keystates);
-			stage.Tick(delta_time, player);
+			stage.Tick(delta_time, coll, keystates);
 			accumulator -= delta_time;
 			ticks++;
 		}
 
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		renderer.RenderAll(stage, player, (GLuint*)&shaders[0]);
+		renderer.RenderAll(stage, (GLuint*)&shaders[0]);
 		if (render2d)
-			renderer2D.RenderAll(stage, player, coll);		
+			renderer2D.RenderAll(stage, coll);		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		framecount++;

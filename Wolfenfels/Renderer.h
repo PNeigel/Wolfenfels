@@ -11,13 +11,13 @@
 class Renderer
 {
 public:
-	Renderer(Stage & stage, Player & player, Enemy & enemy);
+	Renderer(Stage & stage, Enemy & enemy);
 	Renderer(vector<GLuint>* shader);
 	~Renderer();
 
-	void RenderStageWalls(Stage & stage, Player & player, GLuint shader);
+	void RenderStageWalls(Stage & stage, GLuint shader);
 	void RenderBG(Stage & stage, GLuint shader);
-	void RenderAll(Stage & stage, Player & player, GLuint* shader);
+	void RenderAll(Stage & stage, GLuint* shader);
 
 	void RenderPlayer(Player & player, GLuint shader);
 	void RenderEnemy(Player & player, Enemy & enemy, GLuint shader);

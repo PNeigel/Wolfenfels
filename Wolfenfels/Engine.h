@@ -28,9 +28,6 @@ public:
 	string ReadShaderGLSL(string filename);
 	void CreateShaders();
 
-	CollisionHandler coll;
-
-
 	GLFWwindow* window;
 	int keystates[9];
 

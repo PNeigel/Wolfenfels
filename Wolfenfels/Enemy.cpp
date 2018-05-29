@@ -2,11 +2,13 @@
 #include "Stage.h"
 #include <iostream>
 
+Model* Enemy::model = nullptr;
 
-Enemy::Enemy(glm::vec3 pos, Player & player) :
-	pos(pos), player(&player)
+Enemy::Enemy(glm::vec3 pos) :
+	pos(pos)
 {
-	model = ResourceManager::m_models[4];
+	if (model == nullptr)
+		model = ResourceManager::addEnemyModel();
 
 	m_UV = {
 		0.0f, 0.0f,
@@ -45,9 +47,4 @@ void Enemy::Tick(double delta_time, Player & player, Stage & stage)
 		m_UV = textat->getUVcoords(glm::vec2{1, 0});
 	}
 
-}
-
-bool Enemy::operator<(const Enemy & enemy) const
-{
-	return (glm::length(this->pos - player->pos) < glm::length(enemy.pos - player->pos));
 }

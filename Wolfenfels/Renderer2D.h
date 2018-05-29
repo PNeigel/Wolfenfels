@@ -13,13 +13,13 @@ public:
 	Renderer2D(GLuint* shader);
 	~Renderer2D();
 
-	void RenderStageWalls(Stage & stage, Player& player);
-	void RenderAll(Stage & stage, Player & player, CollisionHandler& coll);
+	void RenderStageWalls(Stage & stage);
+	void RenderAll(Stage & stage, CollisionHandler& coll);
 
 	void RenderPlayer(Player & player);
 	void RenderEnemy(Player & player, Enemy & enemy);
 
-	void RenderRaycast(Stage& stage, Player& player, CollisionHandler& coll);
+	void RenderRaycast(Stage& stage, CollisionHandler& coll);
 
 	GLuint* m_screenShader;
 

@@ -9,5 +9,4 @@ Engine engine;
 int main()
 {
 	engine.GameLoop();
-
 }

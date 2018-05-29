@@ -27,26 +27,27 @@ bool WallDistCompare(const Wall& wallA, const Wall& wallB, glm::vec2 target)
 	return (distA < distB);
 }
 
-bool operator==(png::rgb_pixel & pixA, png::rgb_pixel & pixB) {
+bool CloserToThan(glm::vec3 posA, glm::vec3 posB, glm::vec3 targetPos)
+{
+	return (glm::length(posA - targetPos) < glm::length(posB - targetPos));
+}
+
+bool operator==(const png::rgb_pixel & pixA, const png::rgb_pixel & pixB) {
 	if ((int)pixA.red != (int)pixB.red || (int)pixA.green != (int)pixB.green
 		|| (int)pixA.blue != (int)pixB.blue)
 		return false;
 	else return true;
 }
-bool operator!=(png::rgb_pixel & pixA, png::rgb_pixel & pixB) {
-	if ((int)pixA.red != (int)pixB.red || (int)pixA.green != (int)pixB.green
-		|| (int)pixA.blue != (int)pixB.blue)
-		return true;
-	else return false;
+bool operator!=(const png::rgb_pixel & pixA, const png::rgb_pixel & pixB) {
+	return !(pixA == pixB);
 }
 
 
-Stage::Stage(int stage_no, Player & player)
+Stage::Stage(int stage_no)
 {
 	stringstream ssfilename;
 	ssfilename << "Stages/stage" << std::to_string(stage_no) << ".txt";
 	string filename = ssfilename.str();
-	ResourceManager::addDoorModel();
 	ReadStageFromPNG("Stages/stage.png");
 	std::sort(walls.begin(), walls.end(),
 		[&](const Wall& wallA, const Wall& wallB) {return WallDistCompare(wallA, wallB, glm::vec2(player.pos));}
@@ -57,11 +58,6 @@ Stage::Stage(int stage_no, Player & player)
 	m_wallModel->updateVBO(1, wall_UV_coords.size(), wall_UV_coords.data());
 	m_bgModel = ResourceManager::addBgModel();
 	m_bgModel->updateVBO(1, bgcolors.size(), bgcolors.data());
-	ResourceManager::addEnemyModel();
-	for (int i = 0; i < 2; i++) {
-		enemies.push_back(Enemy(glm::vec3{ 2*i+3, 2*i+3, 0.0 }, player));
-	}
-	enemies.push_back(Enemy(glm::vec3{ 4.5 , 6.5, 0.0 }, player));
 }
 
 Stage::~Stage()
@@ -130,15 +126,19 @@ void Stage::SetBGVerts()
 void Stage::ReadStageFromPNG(string filename)
 {
 
-	png::rgb_pixel whiteColor(255, 255, 255);
-	png::rgb_pixel wallColor(0, 0, 0);
-	png::rgb_pixel doorColor(100, 100, 255);
+	const png::rgb_pixel whiteColor(255, 255, 255);
+	const png::rgb_pixel wallColor(0, 0, 0);
+	const png::rgb_pixel doorColor(100, 100, 255);
+	const png::rgb_pixel enemyColor(255, 50, 100);
+	const png::rgb_pixel playerColor(0, 200, 0);
 
 	png::image< png::rgb_pixel > image(filename);
 	png::pixel_buffer<png::rgb_pixel> img_buf = image.get_pixbuf();
 	
 	int width = image.get_width();
 	int height = image.get_height();
+
+	bool playerSet = false;
 
 	for (int i = 0; i < height; ++i) {
 		for (int j = 0; j < width; ++j) {
@@ -198,19 +198,35 @@ void Stage::ReadStageFromPNG(string filename)
 					continue;
 				}
 			}
+
+			// Enemy setup
+
+			else if (current == enemyColor) {
+					enemies.push_back(Enemy(glm::vec3{ j+0.5, height-1-i+0.5, 0.0 }));
+			}
+
+			// Player setup
+
+			if (!playerSet && current == playerColor) {
+				player = Player(glm::vec3{j+0.5, height-1-i+0.5, 0.5f});
+				playerSet = true;
+			}
 		}
 	}
 }
 
-void Stage::Tick(double delta_time, Player & player)
+void Stage::Tick(double delta_time, CollisionHandler & coll, int* keystates)
 {
+	player.Update(delta_time, coll, *this, keystates);
 	auto firstNotClose = std::partition(walls.begin(), walls.end(),
 		[&](Wall& wall) {return CloseDistance(wall, glm::vec2(player.pos), m_closeDistance);}
 	);
 	std::sort(walls.begin(), firstNotClose,
 		[&](const Wall& wallA, const Wall& wallB) {return WallDistCompare(wallA, wallB, glm::vec2(player.pos));}
 	);
-	std::sort(enemies.begin(), enemies.end());
+	std::sort(enemies.begin(), enemies.end(),
+		[&](const Enemy& enemyA, const Enemy& enemyB) {return CloserToThan(enemyA.pos, enemyB.pos, player.pos);}
+	);
 	if (enemies.size() > 0) {
 		for (int i = 0; i < enemies.size();) {
 			enemies[i].Tick(delta_time, player, *this);

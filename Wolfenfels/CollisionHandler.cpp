@@ -50,8 +50,6 @@ glm::vec2 CollisionHandler::Slide(glm::vec2 move, Rect& rectA, Rect& rectB)
 	float By1 = rectB.base.y;
 	float By2 = By1 + rectB.height;
 
-	float width_gap;
-
 	return glm::vec2();
 	
 }

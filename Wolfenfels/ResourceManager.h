@@ -31,6 +31,7 @@ class ResourceManager
 		static vector<GLfloat> m_doorMesh;
 		static vector<GLfloat> m_doorUVDict;
 		static vector<GLfloat> m_doorUV;
+		static vector<GLfloat> m_doorAnimAffected;
 		static vector<GLfloat> m_wallMesh;
 		static array<GLfloat, 24> m_bgMesh;
 

@@ -1,7 +1,8 @@
 #pragma once
 
 #include "globalenums.h"
-#include "TextureAnimation.h"
+#include "Texture/TextureAtlas.h"
+#include "Animation.h"
 #include "CollisionHandler.h"
 #include "Model.h"
 
@@ -21,6 +22,7 @@ class Player
 		int HEIGHT;// = 768;
 
 		Player();
+		Player(glm::vec3 pos);
 		~Player();
 
 		void ComputeView();
@@ -51,7 +53,8 @@ class Player
 		glm::mat4 proj_mat;
 		glm::mat4 mvp;
 
-		TextureAnimation weapon_anim;
+		TextureAtlas* m_textureAtlas;
+		Animation<glm::vec2> m_weaponAnim = Animation<glm::vec2>(false, false);
 
 		Model* model;
 
