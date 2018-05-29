@@ -183,7 +183,7 @@ void Stage::ReadStageFromPNG(string filename)
 
 			// Door setup
 
-			if ( (int)current.red == 100 && (int)current.green == 100 && (int)current.blue == 255) { // pixel is marked as door
+			if ( current == doorColor ) { // pixel is marked as door
 				// check 4 neighboring pixels
 				// check top and bottom
 				if ( top == wallColor || bottom == wallColor ) { // or bottom black?
