@@ -27,6 +27,19 @@ bool WallDistCompare(const Wall& wallA, const Wall& wallB, glm::vec2 target)
 	return (distA < distB);
 }
 
+bool operator==(png::rgb_pixel & pixA, png::rgb_pixel & pixB) {
+	if ((int)pixA.red != (int)pixB.red || (int)pixA.green != (int)pixB.green
+		|| (int)pixA.blue != (int)pixB.blue)
+		return false;
+	else return true;
+}
+bool operator!=(png::rgb_pixel & pixA, png::rgb_pixel & pixB) {
+	if ((int)pixA.red != (int)pixB.red || (int)pixA.green != (int)pixB.green
+		|| (int)pixA.blue != (int)pixB.blue)
+		return true;
+	else return false;
+}
+
 
 Stage::Stage(int stage_no, Player & player)
 {
@@ -116,8 +129,13 @@ void Stage::SetBGVerts()
 
 void Stage::ReadStageFromPNG(string filename)
 {
-	png::image< png::rgba_pixel > image(filename);
-	png::pixel_buffer<png::rgba_pixel> img_buf = image.get_pixbuf();
+
+	png::rgb_pixel whiteColor(255, 255, 255);
+	png::rgb_pixel wallColor(0, 0, 0);
+	png::rgb_pixel doorColor(100, 100, 255);
+
+	png::image< png::rgb_pixel > image(filename);
+	png::pixel_buffer<png::rgb_pixel> img_buf = image.get_pixbuf();
 	
 	int width = image.get_width();
 	int height = image.get_height();
@@ -125,7 +143,7 @@ void Stage::ReadStageFromPNG(string filename)
 	for (int i = 0; i < height; ++i) {
 		for (int j = 0; j < width; ++j) {
 
-			png::rgba_pixel current, top, right, bottom, left;
+			png::rgb_pixel current, top, right, bottom, left;
 
 			current = img_buf[i][j];
 			// we consider all "out of bounds" pixels as black
@@ -139,25 +157,25 @@ void Stage::ReadStageFromPNG(string filename)
 				left = img_buf[i][j-1];
 
 			// Wall setup
-			if ( (int)current.red != 0 || (int)current.green != 0 || (int)current.blue != 0 ) { // if pixel is not black
+			if ( current != wallColor ) { // if pixel is not black
 				// check 4 neighboring pixels
 				// check top
-				if ( (int)top.red == 0 && (int)top.green == 0 && (int)top.blue == 0 ) {
+				if ( top == wallColor ) {
 					Wall wall = Wall(glm::vec2{ j, height-i }, glm::vec2{ j + 1, height - i });
 					walls.push_back(wall);
 				}
 				// check right
-				if ((int)right.red == 0 && (int)right.green == 0 && (int)right.blue == 0) {
+				if ( right == wallColor ) {
 					Wall wall = Wall(glm::vec2{ j + 1, height - i }, glm::vec2{ j + 1, height - (i + 1) });
 					walls.push_back(wall);
 				}
 				// check bottom
-				if ((int)bottom.red == 0 && (int)bottom.green == 0 && (int)bottom.blue == 0) {
+				if ( bottom == wallColor ) {
 					Wall wall = Wall(glm::vec2{ j + 1, height - (i + 1) }, glm::vec2{ j, height - (i + 1) });
 					walls.push_back(wall);
 				}
 				// check left
-				if ((int)left.red == 0 && (int)left.green == 0 && (int)left.blue == 0) {
+				if ( left == wallColor ) {
 					Wall wall = Wall(glm::vec2{ j, height - (i + 1) }, glm::vec2{ j, height - i });
 					walls.push_back(wall);
 				}
@@ -168,15 +186,13 @@ void Stage::ReadStageFromPNG(string filename)
 			if ( (int)current.red == 100 && (int)current.green == 100 && (int)current.blue == 255) { // pixel is marked as door
 				// check 4 neighboring pixels
 				// check top and bottom
-				if (   ((int)top.red == 0 && (int)top.green == 0 && (int)top.blue == 0) // top black?
-					|| ((int)bottom.red == 0 && (int)bottom.green == 0 && (int)bottom.blue == 0)   ) { // or bottom black?
+				if ( top == wallColor || bottom == wallColor ) { // or bottom black?
 					Door door(glm::vec3{ j + 0.5, height - 1 -i + 0.5, 0.0f }, true);
 					m_doors.push_back(door);
 					continue;
 				}
 				// check right and left
-				if (   ((int)right.red == 0 && (int)right.green == 0 && (int)right.blue == 0) // right black?
-					|| ((int)left.red == 0 && (int)left.green == 0 && (int)left.blue == 0) ) { // or left black?
+				if ( right == wallColor || left == wallColor) { // or left black?
 					Door door(glm::vec3{ j + 0.5, height - 1 - i + 0.5, 0.0f }, false);
 					m_doors.push_back(door);
 					continue;
