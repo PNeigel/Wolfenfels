@@ -11,6 +11,7 @@ public:
 	~Door();
 
 	void tick(float delta_time);
+	void toggle();
 
 	static Model* m_model;
 

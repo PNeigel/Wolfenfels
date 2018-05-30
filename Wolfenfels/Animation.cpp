@@ -17,6 +17,10 @@ Animation<T>::~Animation()
 template<typename T>
 void Animation<T>::tick(float delta_time)
 {
+	if (m_currentTime > 0.0 && m_currentTime < m_timestamps.back()) {
+		m_atStart = false;
+		m_atEnd = false;
+	}
 	if (m_playing && !m_reverse) {
 		m_currentTime += delta_time;
 		if (m_currentTime > m_timestamps.back()) {
@@ -30,7 +34,7 @@ void Animation<T>::tick(float delta_time)
 	}
 	else if (m_playing && m_reverse) {
 		m_currentTime -= delta_time;
-		if (m_currentTime < 0) {
+		if (m_currentTime <= 0) {
 			if (!m_repeat) {
 				m_playing = false;
 				setTimeToStart();
@@ -52,22 +56,30 @@ template<typename T>
 void Animation<T>::setTimeToStart()
 {
 	m_currentTime = 0.0f;
+	m_atStart = true;
+	m_atEnd = false;
 }
 
 template<typename T>
 inline void Animation<T>::setTimeToEnd()
 {
 	m_currentTime = m_timestamps.back();
+	m_atEnd = true;
+	m_atStart = false;
 }
 
 template<typename T>
 T Animation<T>::getCurrentKeyframe()
 {
-	int lastIdx = m_keyframes.size() - 2;
-	int nextIdx = m_keyframes.size() - 1;
-	float intoNext = 1.0;
+	int lastIdx, nextIdx; 
+	float intoNext;
 	
 	if (!m_reverse) {
+
+		lastIdx = m_keyframes.size() - 2;
+		nextIdx = m_keyframes.size() - 1;
+		intoNext = 1.0;
+
 		for (int i = 0; i < m_keyframes.size() - 1; i++) {
 			if (m_currentTime >= m_timestamps[i] && m_currentTime < m_timestamps[i+1]) {
 				lastIdx = i;
@@ -78,8 +90,13 @@ T Animation<T>::getCurrentKeyframe()
 		}
 	}
 	else {
-		for (int i = m_keyframes.size() -1; i >= 0; i--) {
-			if (m_currentTime <= m_timestamps[i]) {
+
+		lastIdx = 1;
+		nextIdx = 0;
+		intoNext = 1.0;
+
+		for (int i = m_keyframes.size()-1; i > 0; i--) {
+			if (m_currentTime <= m_timestamps[i] && m_currentTime > m_timestamps[i-1]) {
 				lastIdx = i;
 				nextIdx = i - 1;
 				intoNext = (m_timestamps[i] - m_currentTime) / (m_timestamps[i] - m_timestamps[i - 1]);

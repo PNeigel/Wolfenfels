@@ -199,10 +199,10 @@ Model * ResourceManager::addDoorModel()
 
 void ResourceManager::load()
 {
-	addTexture("Assets/wallblue.png");
+	addTexture("Assets/wall.png");
 	addTextureAtlas("Assets/pistol.png", 5, 1);
 	addTextureAtlas("Assets/Cyclops.png", 2, 1);
-	addTexture("Assets/wall.png");
+	addTexture("Assets/door.png");
 }
 
 ResourceManager::ResourceManager()

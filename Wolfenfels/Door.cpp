@@ -16,6 +16,7 @@ Door::Door(glm::vec3 pos, bool xAligned) :
 	m_openAnimation.addKeyframe(glm::mat4(1.0), 0.0f);
 	glm::vec3 transVec{1.0f, 0.0f, 0.0f};
 	m_openAnimation.addKeyframe(glm::translate(0.78*transVec), 1.0f);
+	m_openAnimation.reverse();
 }
 
 
@@ -28,4 +29,10 @@ void Door::tick(float delta_time)
 	m_openAnimation.tick(delta_time);
 	glm::mat4 newAnimMatrix = m_openAnimation.getCurrentKeyframe();
 	m_animMatrix = newAnimMatrix;
+}
+
+void Door::toggle()
+{
+	m_openAnimation.m_playing = true;
+	m_openAnimation.reverse();
 }

@@ -79,7 +79,7 @@ void Player::Update(double delta_time, CollisionHandler& coll, Stage& stage, int
 	}
 	if (keystates[Buttons::ACTION] && glm::length(glm::vec2(pos - stage.m_doors[0].m_pos)) < 0.6) {
 		keystates[Buttons::ACTION] = 0;
-		stage.m_doors[0].m_openAnimation.m_playing = true;
+		stage.m_doors[0].toggle();
 	}
 
 	ComputeView();
