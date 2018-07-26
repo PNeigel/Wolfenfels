@@ -47,7 +47,10 @@ void Player::ComputeView()
 
 	mvp = proj_mat * view_mat;
 }
-
+/**
+	When a key is pressed, test if the player can move in that direction and then
+	move him. Also rotate around players Z axis.
+**/
 void Player::Move(double delta_time, CollisionHandler& coll, Stage& stage, int* keystates)
 {
 	// Forwards, backwards
