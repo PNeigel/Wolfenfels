@@ -3,38 +3,36 @@
 #include <fstream>
 #include <sstream>
 
+/**
+	Returns true if wall is closer to objectPos than threshold.
+**/
 bool CloseDistance(const Wall& wall, glm::vec2 objectPos, float threshold)
 {
-	// Returns true if wall is closer to objectPos than threshold
-
 	return (glm::length(wall.sides[0] - objectPos) <= threshold);
 }
 
 
+/**
+	Returns true if wallA is closer to target than wallB.
+	The wall with the start- or end-point that is closest to target is regarded as the closer wall.
+**/
 bool WallDistCompare(const Wall& wallA, const Wall& wallB, glm::vec2 target)
 {
-	/*
-	Returns true if wallA is closer to target than wallB.
-	The wall with the end point that is closest to target is regarded as the closer wall.
-	*/
-
 	float leftDistA = glm::length(glm::vec2(target) - wallA.sides[0]);
 	float rightDistA = glm::length(glm::vec2(target) - wallA.sides[1]);
 	float leftDistB = glm::length(glm::vec2(target) - wallB.sides[0]);
 	float rightDistB = glm::length(glm::vec2(target) - wallB.sides[1]);
-
-
 
 	float distA = glm::min(leftDistA, rightDistA);
 	float distB = glm::min(leftDistB, rightDistB);
 
 	return (distA < distB);
 }
-
+/** 
+	Returns true if posA is closer to targetPos than posB
+**/
 bool CloserToThan(glm::vec3 posA, glm::vec3 posB, glm::vec3 targetPos)
 {
-	// Returns true if posA is closer to targetPos than posB
-
 	return (glm::length(posA - targetPos) < glm::length(posB - targetPos));
 }
 
@@ -225,20 +223,28 @@ void Stage::Tick(double delta_time, CollisionHandler & coll, int* keystates)
 {
 	player.Update(delta_time, coll, *this, keystates);
 
-	// Find first wall that is "not close", according to threshold = m_closeDistance
+	// Partition all walls in "close" (distance > m_closeDistance) and "not close".
+	// Return iterator of first wall that is "not close".
 	auto firstNotClose = std::partition(walls.begin(), walls.end(),
 		[&](Wall& wall) {return CloseDistance(wall, glm::vec2(player.pos), m_closeDistance);}
 	);
-	// 
+
+	// Sort the walls that are close according to their distance to the player.
 	std::sort(walls.begin(), firstNotClose,
 		[&](const Wall& wallA, const Wall& wallB) {return WallDistCompare(wallA, wallB, glm::vec2(player.pos));}
 	);
+
+	// Sort the doors according to the distance to the player.
 	std::sort(m_doors.begin(), m_doors.end(),
 		[&](const Door& doorA, const Door& doorB) {return CloserToThan(doorA.m_pos, doorB.m_pos, player.pos);}
 	);
+
+	// Sort the enemies according to the distance to the player.
 	std::sort(enemies.begin(), enemies.end(),
 		[&](const Enemy& enemyA, const Enemy& enemyB) {return CloserToThan(enemyA.pos, enemyB.pos, player.pos);}
 	);
+
+	// Loop over enemies: Tick enemy and kill + delete it if HP < 0.
 	if (enemies.size() > 0) {
 		for (int i = 0; i < enemies.size();) {
 			enemies[i].Tick(delta_time, player, *this);
@@ -248,6 +254,8 @@ void Stage::Tick(double delta_time, CollisionHandler & coll, int* keystates)
 			else i++;
 		}
 	}
+
+	// Loop over doors: Tick door.
 	for (Door& door : m_doors)
 		door.tick(delta_time);
 }
