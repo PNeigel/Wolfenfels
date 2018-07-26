@@ -1,5 +1,5 @@
-- IMPORTANT: remove hardcoded enemy.model reference
-- collision with doors
+- IMPORTANT: remove hardcoded enemy.model and Doormesh reference
+- use data for meshes, animation etc instead of hardcoding
 - make Shader its own class
 - Gameplay:
 	- hitpoints

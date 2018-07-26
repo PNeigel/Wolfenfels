@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "Animation.h"
 #include "Utils.h"
+#include "Player.h"
 
 class Door
 {
@@ -11,8 +12,10 @@ public:
 	Door(glm::vec3 pos, bool xAligned);
 	~Door();
 
-	void tick(float delta_time);
+	void tick(float delta_time, CollisionHandler& coll, Player& player);
 	void toggle();
+
+	void pushBackPlayer(Player& player);
 
 	static Model* m_model;
 

@@ -44,13 +44,17 @@ Door::~Door()
 {
 }
 
-void Door::tick(float delta_time)
+void Door::tick(float delta_time, CollisionHandler& coll, Player& player)
 {
 	m_openAnimationMesh.tick(delta_time);
 	m_openAnimationCollision.tick(delta_time);
 	glm::mat4 newAnimMatrix = m_openAnimationMesh.getCurrentKeyframe();
 	m_animMatrix = newAnimMatrix;
 	m_collisionRects[2] = m_openAnimationCollision.getCurrentKeyframe();
+
+	if (coll.CheckOverlap(player.collision_rect, m_collisionRects[2].translate(m_pos))) {
+		pushBackPlayer(player);
+	}
 }
 
 void Door::toggle()
@@ -59,4 +63,21 @@ void Door::toggle()
 	m_openAnimationCollision.m_playing = true;
 	m_openAnimationMesh.reverse();
 	m_openAnimationCollision.reverse();
+}
+
+void Door::pushBackPlayer(Player& player)
+{
+	float pushValue = 0.01;
+	if (!m_xAligned) {
+		if (player.pos.y > m_pos.y)
+			player.pos.y += pushValue;
+		else
+			player.pos.y -= pushValue;
+	}
+	else {
+		if (player.pos.x > m_pos.x)
+			player.pos.x += pushValue;
+		else
+			player.pos.x -= pushValue;
+	}
 }

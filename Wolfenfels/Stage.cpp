@@ -257,5 +257,5 @@ void Stage::Tick(double delta_time, CollisionHandler & coll, int* keystates)
 
 	// Loop over doors: Tick door.
 	for (Door& door : m_doors)
-		door.tick(delta_time);
+		door.tick(delta_time, coll, player);
 }
