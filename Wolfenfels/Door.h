@@ -17,6 +17,7 @@ public:
 	static Model* m_model;
 
 	glm::vec3 m_pos;
+	// xAligned means the path through the door is parallel to the x axis.
 	bool m_xAligned = false;
 	
 	glm::mat4 m_modelMatrix;
@@ -24,6 +25,7 @@ public:
 
 	Rect m_collisionRects[3];
 
-	Animation<glm::mat4> m_openAnimation = Animation<glm::mat4>(true, false);
+	Animation<glm::mat4> m_openAnimationMesh = Animation<glm::mat4>(true, false);
+	Animation<Rect> m_openAnimationCollision = Animation<Rect>(true, false);
 };
 

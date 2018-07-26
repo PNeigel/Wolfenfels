@@ -27,6 +27,18 @@ struct Rect {
 		return result;
 	}
 
+	Rect translate(glm::vec2 shift) {
+		return Rect(base.x + shift.x, base.y + shift.y, width, height);
+	}
+
+	Rect operator*(float scalar) {
+		return Rect(base.x * scalar, base.y * scalar, width * scalar, height * scalar);
+	}
+
+	Rect operator+(Rect& rect) {
+		return Rect(base.x + rect.base.x, base.y + rect.base.y, width + rect.width, height + rect.height);
+	}
+
 	glm::vec2 base;
 	float height, width;
 };

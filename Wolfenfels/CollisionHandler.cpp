@@ -15,7 +15,7 @@ CollisionHandler::~CollisionHandler()
 }
 
 /**
-	test if the the players movement (vel * delta_time) will result in collision with any wall or door.
+	Test if the the players movement (vel * delta_time) will result in collision with any wall or door.
 **/
 
 glm::vec2 CollisionHandler::TestMove(Player& player, Stage & stage, double delta_time, float direction)
@@ -27,6 +27,8 @@ glm::vec2 CollisionHandler::TestMove(Player& player, Stage & stage, double delta
 	bool stop_x = false;
 	bool stop_y = false;
 	glm::vec2 move_vec(direction * player.view_dir);
+
+	// Loop over Walls
 	for (Wall wall : stage.walls) {
 		if (!stop_x && CheckOverlap(future_x, wall.collision_rect)) {
 			stop_x = true;
@@ -36,7 +38,22 @@ glm::vec2 CollisionHandler::TestMove(Player& player, Stage & stage, double delta
 			stop_y = true;
 			move_vec.y = 0;
 		}
-		if (stop_x && stop_y) break;
+		if (stop_x && stop_y) return move_vec;
+	}
+
+	// Loop over Doors
+	for (Door door : stage.m_doors) {
+		for (int i = 0; i < 3; i++) {
+			if (!stop_x && CheckOverlap(future_x, door.m_collisionRects[i].translate(door.m_pos))) {
+				stop_x = true;
+				move_vec.x = 0;
+			}
+			if (!stop_y && CheckOverlap(future_y, door.m_collisionRects[i].translate(door.m_pos))) {
+				stop_y = true;
+				move_vec.y = 0;
+			}
+			if (stop_x && stop_y) return move_vec;
+		}
 	}
 	return move_vec;
 }

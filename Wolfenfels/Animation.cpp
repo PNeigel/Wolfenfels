@@ -2,6 +2,7 @@
 
 #include <numeric>
 #include "glm.hpp"
+#include "Utils.h"
 
 template<typename T>
 Animation<T>::Animation(bool interpolated, bool repeat) :
@@ -116,3 +117,4 @@ T Animation<T>::getCurrentKeyframe()
 
 template class Animation<glm::vec2>;
 template class Animation<glm::mat4>;
+template class Animation<Rect>;
