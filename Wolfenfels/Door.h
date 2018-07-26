@@ -3,6 +3,7 @@
 #include "glm.hpp"
 #include "Model.h"
 #include "Animation.h"
+#include "Utils.h"
 
 class Door
 {
@@ -20,6 +21,8 @@ public:
 	
 	glm::mat4 m_modelMatrix;
 	glm::mat4 m_animMatrix = glm::mat4(1.0f);
+
+	Rect m_collisionRects[3];
 
 	Animation<glm::mat4> m_openAnimation = Animation<glm::mat4>(true, false);
 };

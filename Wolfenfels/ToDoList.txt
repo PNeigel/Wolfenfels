@@ -1,8 +1,8 @@
 - IMPORTANT: remove hardcoded enemy.model reference
+- collision with doors
+- make Shader its own class
 - Gameplay:
 	- hitpoints
-	- remove shooting through walls
-	- add distance max for a shot hit
 	- enemies
 		- attack
 - doors

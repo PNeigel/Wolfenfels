@@ -5,6 +5,7 @@
 
 bool CloseDistance(const Wall& wall, glm::vec2 objectPos, float threshold)
 {
+	// Returns true if wall is closer to objectPos than threshold
 
 	return (glm::length(wall.sides[0] - objectPos) <= threshold);
 }
@@ -12,6 +13,13 @@ bool CloseDistance(const Wall& wall, glm::vec2 objectPos, float threshold)
 
 bool WallDistCompare(const Wall& wallA, const Wall& wallB, glm::vec2 target)
 {
+	/*
+	Returns true if wallA is closer to target than wallB
+	Method: First checks distance perpendicular to walls.
+	If that is the same ( < 0.001 ) we check which wall has the closest
+	end point to the target-
+	*/
+
 	// this wall
 	glm::vec2 diffA = glm::vec2(target) - wallA.sides[0];
 	float distA = glm::abs(glm::dot(diffA, wallA.m_normal));
@@ -29,6 +37,8 @@ bool WallDistCompare(const Wall& wallA, const Wall& wallB, glm::vec2 target)
 
 bool CloserToThan(glm::vec3 posA, glm::vec3 posB, glm::vec3 targetPos)
 {
+	// Returns true if posA is closer to targetPos than posB
+
 	return (glm::length(posA - targetPos) < glm::length(posB - targetPos));
 }
 
@@ -218,9 +228,12 @@ void Stage::ReadStageFromPNG(string filename)
 void Stage::Tick(double delta_time, CollisionHandler & coll, int* keystates)
 {
 	player.Update(delta_time, coll, *this, keystates);
+
+	// Find first wall that is "not close", according to threshold = m_closeDistance
 	auto firstNotClose = std::partition(walls.begin(), walls.end(),
 		[&](Wall& wall) {return CloseDistance(wall, glm::vec2(player.pos), m_closeDistance);}
 	);
+	// 
 	std::sort(walls.begin(), firstNotClose,
 		[&](const Wall& wallA, const Wall& wallB) {return WallDistCompare(wallA, wallB, glm::vec2(player.pos));}
 	);
