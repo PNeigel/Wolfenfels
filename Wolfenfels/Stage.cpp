@@ -14,23 +14,19 @@ bool CloseDistance(const Wall& wall, glm::vec2 objectPos, float threshold)
 bool WallDistCompare(const Wall& wallA, const Wall& wallB, glm::vec2 target)
 {
 	/*
-	Returns true if wallA is closer to target than wallB
-	Method: First checks distance perpendicular to walls.
-	If that is the same ( < 0.001 ) we check which wall has the closest
-	end point to the target-
+	Returns true if wallA is closer to target than wallB.
+	The wall with the end point that is closest to target is regarded as the closer wall.
 	*/
 
-	// this wall
-	glm::vec2 diffA = glm::vec2(target) - wallA.sides[0];
-	float distA = glm::abs(glm::dot(diffA, wallA.m_normal));
-	// other wall
-	glm::vec2 diffB = glm::vec2(target) - wallB.sides[0];
-	float distB = glm::abs(glm::dot(diffB, wallB.m_normal));
+	float leftDistA = glm::length(glm::vec2(target) - wallA.sides[0]);
+	float rightDistA = glm::length(glm::vec2(target) - wallA.sides[1]);
+	float leftDistB = glm::length(glm::vec2(target) - wallB.sides[0]);
+	float rightDistB = glm::length(glm::vec2(target) - wallB.sides[1]);
 
-	if (glm::abs(distA - distB) < 0.001) {
-		distA = glm::min(glm::length(diffA), glm::length(glm::vec2(target) - wallA.sides[1]));
-		distB = glm::min(glm::length(diffB), glm::length(glm::vec2(target) - wallB.sides[1]));
-	}
+
+
+	float distA = glm::min(leftDistA, rightDistA);
+	float distB = glm::min(leftDistB, rightDistB);
 
 	return (distA < distB);
 }
